@@ -53,9 +53,10 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import org.bee.fxgallery.db.controller.BirdsController;
-import org.bee.fxgallery.db.model.Bird;
-import org.bee.fxgallery.ui.CustomDialog;
+import org.bee.fxgallery.db.controller.SpeciesController;
+import org.bee.fxgallery.db.model.Species;
+import org.bee.fxgallery.ui.AddSpeciesDialog;
+import org.bee.fxgallery.ui.ViewImageDialog;
 
 public class FXMLGalleryController implements Initializable {
 
@@ -73,12 +74,12 @@ public class FXMLGalleryController implements Initializable {
     private Button btnAddImage;
     private Stage mainStage;
 
-    private BirdsController birdsController;
+    private SpeciesController birdsController;
     private File file = null;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        birdsController = new BirdsController();
+        birdsController = new SpeciesController();
         // Set events on corresponding controls.
         btnAddImage.setOnAction(this::handleButtonActions);
         menuClose.setOnAction(this::handleMenuBarMenuAction);
@@ -96,8 +97,8 @@ public class FXMLGalleryController implements Initializable {
         imagesPane.setHgap(15);
         try {
             //-- Read the list of birds along with their images stored in the DB.
-            List<Bird> birds = birdsController.getBirds();
-            for (Bird bird : birds) {
+            List<Species> birds = birdsController.getBirds();
+            for (Species bird : birds) {
                 VBox cardBox = createImageCard(bird);
                 //-- Add the new card to the main panel.
                 imagesPane.getChildren().addAll(cardBox);
@@ -135,26 +136,23 @@ public class FXMLGalleryController implements Initializable {
     }
 
     private void addNewImage() {
-        CustomDialog dialog = new CustomDialog(this.mainStage);
-        dialog.showAndWait();
+        AddSpeciesDialog dlgAddImage = new AddSpeciesDialog(this.mainStage);
+        dlgAddImage.showAndWait();
         //-- Retreive what the user entered in the dialog box.        
-        Bird newBird = dialog.getSpecies();
+        Species newBird = dlgAddImage.getSpecies();
         if (newBird != null) {
             birdsController.addNewBird(newBird);
             VBox imageCard = createImageCard(newBird);
             imagesPane.getChildren().add(imageCard);
-            System.out.println("You entered: " + dialog.getFirstname());
+            System.out.println("You entered: " + dlgAddImage.getFirstname());
         }
     }
 
-    private void deleteSelectedImage(VBox cardBox, Bird inBird) {
-        // TODO: implement delete from the database.
-        // And add comfirmation message.        
-        System.out.println("Delete bird: " + inBird.getBirdName());
-
+    private void deleteSelectedImage(VBox cardBox, Species inBird) {
+        System.out.println("Delete bird: " + inBird.getCommonName());
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle("Comfirm Delete Image");
-        alert.setHeaderText(String.format("Are you sure you want to delete: %s?", inBird.getBirdName()));
+        alert.setHeaderText(String.format("Are you sure you want to delete: %s?", inBird.getCommonName()));
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             System.out.println("Go ahead and delete!");
@@ -166,12 +164,12 @@ public class FXMLGalleryController implements Initializable {
 
     }
 
-    private VBox createImageCard(final Bird inBird) {
+    private VBox createImageCard(final Species inBird) {
         VBox cardBox = new VBox();
 
         try {
-            InputStream myInputStream = new ByteArrayInputStream(inBird.getImageInStream());
-            final Image fullImage = new Image(myInputStream, 150, 0, true, true);
+            InputStream myInputStream = new ByteArrayInputStream(inBird.getImageBytes());
+            final Image fullImage = new Image(myInputStream, 250, 0, true, true);
             HBox controlButtons = new HBox();
             Button btnViewImage = new Button("View");
             Button btnViewDelete = new Button("Delete");
@@ -199,31 +197,9 @@ public class FXMLGalleryController implements Initializable {
         return cardBox;
     }
 
-    private void viewImage(final Bird inBird) {
-        try {
-            InputStream myInputStream = new ByteArrayInputStream(inBird.getImageInStream());
-            final Image fullImage = new Image(myInputStream);
-            BorderPane borderPane = new BorderPane();
-            ImageView imageView = new ImageView();
-            imageView.setImage(fullImage);
-            imageView.setStyle("-fx-background-color: BLACK");
-            imageView.setFitHeight(mainStage.getHeight() - 10);
-            imageView.setPreserveRatio(true);
-            imageView.setSmooth(true);
-            imageView.setCache(true);
-            borderPane.setCenter(imageView);
-            borderPane.setStyle("-fx-background-color: BLACK");
-            Stage newStage = new Stage();
-            newStage.setWidth(mainStage.getWidth() + 100);
-            newStage.setHeight(mainStage.getHeight() + 100);
-            newStage.setTitle(inBird.getBirdName());
-            Scene scene = new Scene(borderPane, Color.BLACK);
-            newStage.getIcons().add(mainStage.getIcons().get(0));
-            newStage.setScene(scene);
-            newStage.show();
-        } catch (Exception ex) {
-            Logger.getLogger(FXMLGalleryController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    private void viewImage(final Species inSpecies) {
+        ViewImageDialog dlgViewImage = new ViewImageDialog(this.mainStage, inSpecies);
+        dlgViewImage.showAndWait();
     }
 
     /**

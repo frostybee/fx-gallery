@@ -25,6 +25,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.bee.fxgallery.ui.controller.FXMLGalleryController;
 import org.bee.fxgallery.utils.AppConstants;
+import org.bee.fxgallery.utils.AppUtils;
 
 /**
  *
@@ -35,22 +36,26 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/main.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(AppUtils.APP_FXML_PATH + "main.fxml"));
         Parent root = loader.load();
         FXMLGalleryController controller = (FXMLGalleryController) loader.getController();
         controller.setMainStage(stage);
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("style/styles.css").toExternalForm());        
+        scene.getStylesheets().add(getClass().getResource(AppUtils.APP_STYLE_SHEETS).toExternalForm());
         stage.setTitle(AppConstants.APP_TITLE);
         stage.setScene(scene);
         stage.show();
         stage.setOnCloseRequest(e -> Platform.exit());
-        stage.getIcons().add(new Image(getClass().getResourceAsStream("icon/bee.png")));
+        stage.getIcons().add(new Image(getClass().getResourceAsStream(AppUtils.APP_ICON)));
 
     }
 
     public static void main(String[] args) {
         launch(args);
+    }
+    @Override
+    public void stop() throws Exception {
+        Platform.exit();
     }
 
 }

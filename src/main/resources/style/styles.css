@@ -1,0 +1,12 @@
+/* 
+    Created on : Jul 27, 2020, 3:12:55 AM
+    Author     : Sleiman Rabah
+*/
+
+.label {
+    -fx-text-fill: blue;    
+}
+
+.lblErrorMsg {
+    -fx-text-fill: red;    
+}
