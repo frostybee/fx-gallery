@@ -12,6 +12,7 @@ description = 'A JavaFX Image Gallery'
 group = 'org.bee'
 
 mainClassName = 'org.bee.fxgallery.Main'
+//mainClassName = 'org.bee.fxgallery.PlutoExplorer'
 
 repositories {    
     jcenter() 
@@ -23,11 +24,11 @@ dependencies {
     //implementation group: 'commons-io', name: 'commons-io', version: '2.7'  
     implementation 'org.xerial:sqlite-jdbc:3.30.1'        
     implementation 'de.jensd:fontawesomefx-commons:11.0'
-    implementation 'de.jensd:fontawesomefx-materialdesignfont:1.7.22-11'
+//    implementation 'de.jensd:fontawesomefx-materialdesignfont:1.7.22-11'
     implementation 'de.jensd:fontawesomefx-fontawesome:4.7.0-9.1.2'
-    implementation  'de.jensd:fontawesomefx-controls:9.1.2'
+//    implementation  'de.jensd:fontawesomefx-controls:9.1.2'
     implementation 'de.jensd:fontawesomefx-materialdesignfont:2.0.26-9.1.2'
-
+//    implementation 'de.jensd:fontawesomefx:8.9'
 
 
 }

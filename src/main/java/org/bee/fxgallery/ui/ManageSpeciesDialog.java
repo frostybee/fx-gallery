@@ -33,21 +33,30 @@ import org.bee.fxgallery.utils.AppUtils;
  *
  * @author Sleiman Rabah
  */
-public class AddSpeciesDialog extends Stage implements EventHandler<ActionEvent> {
+public class ManageSpeciesDialog extends Stage implements EventHandler<ActionEvent> {
 
+    public enum SpeciesDlgViewMode {
+        ADD, UPDATE
+    }
     private Button btnSubmit;
     private TextField txtScientificName;
     private TextField txtCommonName;
     private TextField txtFamily;
     private final Stage parentStage;
     private byte[] bytes;
-    private Species species;
+    private Species mSpecies;
+
     private File mSelectedFile;
     private Label lblErrorMsg;
+    private SpeciesDlgViewMode mViewMode;
 
-    public AddSpeciesDialog(Stage owner) {
+    public ManageSpeciesDialog(Stage owner,Species inSpecies, SpeciesDlgViewMode iViewMode) {
         this.parentStage = owner;
         mSelectedFile = null;
+        this.mViewMode = iViewMode;
+        if (inSpecies != null) {
+            mSpecies = inSpecies;
+        }
         initComponents();
     }
 
@@ -56,12 +65,18 @@ public class AddSpeciesDialog extends Stage implements EventHandler<ActionEvent>
         this.initModality(Modality.APPLICATION_MODAL);
         //-- Create the input form.        
         GridPane root = makeInputForm();
+        // If updating a species, load its info into the form controls.
+        if (mViewMode == SpeciesDlgViewMode.UPDATE){
+            txtCommonName.setText(mSpecies.getCommonName());
+            txtFamily.setText(mSpecies.getFamily());
+            txtScientificName.setText(mSpecies.getScientificName());
+        }
         //--
-        Scene mainScene = new Scene(root, 500, 400);
-        mainScene.getStylesheets().add(getClass().getResource(AppUtils.APP_STYLE_SHEETS).toExternalForm());
-        this.setScene(mainScene);
+        Scene dialogScene = new Scene(root, 500, 400);
+        dialogScene.getStylesheets().add(getClass().getResource(AppUtils.APP_STYLE_SHEETS).toExternalForm());
+        this.setScene(dialogScene);
         this.setTitle("Bee's Gallery - Add New Image");
-        this.setScene(mainScene);
+        this.setScene(dialogScene);
     }
 
     @Override
@@ -141,9 +156,9 @@ public class AddSpeciesDialog extends Stage implements EventHandler<ActionEvent>
                 //TODO: update placehold with the selected path.
                 // You selected:
             } catch (FileNotFoundException ex) {
-                Logger.getLogger(AddSpeciesDialog.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ManageSpeciesDialog.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
-                Logger.getLogger(AddSpeciesDialog.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ManageSpeciesDialog.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -156,18 +171,22 @@ public class AddSpeciesDialog extends Stage implements EventHandler<ActionEvent>
         if (!commonName.isEmpty() && !scientificName.isEmpty() && !family.isEmpty()
                 && mSelectedFile != null) {
             // If valid, create a new species object.            
-            species = new Species(scientificName, commonName, bytes, family);            
+            mSpecies = new Species(scientificName, commonName, bytes, family);
             // Finally, submit the form.
             close();
         } else {
             //-- Invalid form! Display an error message.            
-            String errorMsg = "Error: you must fill out all the fields.";
+            String errorMsg = "Error: you must fill out all the fields and select an image!";
             lblErrorMsg.setText(errorMsg);
             lblErrorMsg.setVisible(true);
         }
     }
 
     public Species getSpecies() {
-        return species;
+        return mSpecies;
+    }
+
+    public void setSpecies(Species species) {
+        this.mSpecies = species;
     }
 }

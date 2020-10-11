@@ -37,7 +37,7 @@ import org.bee.fxgallery.ui.controller.FXMLGalleryController;
 public class ViewImageDialog extends Stage {
 
     private Stage mParentWindow = null;
-    private Species mSpecies = null;
+    private Species mSpecies = null;   
 
     public ViewImageDialog(Stage owner, Species inSpecies) {
         this.mParentWindow = owner;
