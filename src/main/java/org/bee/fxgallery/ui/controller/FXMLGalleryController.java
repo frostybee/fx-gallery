@@ -103,7 +103,7 @@ public class FXMLGalleryController implements Initializable {
         imagesPane.setVgap(10);
         try {
             //-- Read the list of birds along with their images stored in the DB.
-            List<Species> birds = birdsController.getBirds();
+            List<Species> birds = birdsController.getSpecies();
             for (Species bird : birds) {
                 VBox cardBox = createImageCard(bird);
                 //-- Add the new card to the main panel.
@@ -124,7 +124,7 @@ public class FXMLGalleryController implements Initializable {
         if (e.getSource() == btnAddImage) {
             System.out.println("Adding a new image.");
             //-- Select a new image to add to the library.
-            AddOrUpdateSpecies(SpeciesDlgViewMode.ADD, null);
+            addSpecies();
         }
     }
 
@@ -139,22 +139,32 @@ public class FXMLGalleryController implements Initializable {
         }
     }
 
-    private void AddOrUpdateSpecies(SpeciesDlgViewMode viewMode, Species inSpecies) {
-        ManageSpeciesDialog dlgAddImage = new ManageSpeciesDialog(this.mainStage, inSpecies, viewMode);
+    private void addSpecies() {
+        ManageSpeciesDialog dlgAddImage = new ManageSpeciesDialog(this.mainStage, null, SpeciesDlgViewMode.ADD);
         dlgAddImage.showAndWait();
         //-- Retreive what the user entered in the dialog box.        
         Species newBird = dlgAddImage.getSpecies();
-        if (viewMode == SpeciesDlgViewMode.ADD) {
-            if (newBird != null) {
-                birdsController.addNewBird(newBird);
-                VBox imageCard = createImageCard(newBird);
-                imagesPane.getChildren().add(imageCard);
-                System.out.println("You entered: " + dlgAddImage.getFirstname());
-            }
-        } else if (viewMode == SpeciesDlgViewMode.UPDATE) {
-            if (newBird != null) {
-                // Update species's info.
-            }
+        if (newBird != null) {
+            birdsController.addNewSpecies(newBird);
+            VBox imageCard = createImageCard(newBird);
+            imagesPane.getChildren().add(imageCard);
+            System.out.println("You entered: " + dlgAddImage.getFirstname());
+        }
+    }
+
+    private void UpdateSpecies(VBox cardBox, Species existingSpecies) {
+        ManageSpeciesDialog dlgAddImage = new ManageSpeciesDialog(this.mainStage, existingSpecies, SpeciesDlgViewMode.UPDATE);
+        dlgAddImage.showAndWait();
+        //-- Retreive what the user entered in the dialog box.        
+        Species updatedSpecies = dlgAddImage.getSpecies();
+        if (updatedSpecies != null) {
+            // Update species's info.
+            birdsController.updateSpecies(updatedSpecies);
+            // Delete old card.
+            imagesPane.getChildren().remove(cardBox);
+            // Make new one.
+            VBox imageCard = createImageCard(updatedSpecies);
+            imagesPane.getChildren().add(imageCard);
         }
     }
 
@@ -191,7 +201,7 @@ public class FXMLGalleryController implements Initializable {
             // Set menu's event handlers
             menuView.setOnAction(e -> viewImage(inSpecies));
             menuDelete.setOnAction(e -> deleteSelectedImage(cardBox, inSpecies));
-            menuUpdate.setOnAction(e -> AddOrUpdateSpecies(SpeciesDlgViewMode.UPDATE, inSpecies));
+            menuUpdate.setOnAction(e -> UpdateSpecies(cardBox, inSpecies));
             //
             contextMenu.getItems().addAll(menuView, menuUpdate, menuDelete);
 
@@ -225,7 +235,6 @@ public class FXMLGalleryController implements Initializable {
                     }
                 }
             });
-
             //-- Setup the card/          
             controlButtons.getStyleClass().add("hbox-with-margin");
             controlButtons.getChildren().addAll(btnContextMenu);

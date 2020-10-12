@@ -1,5 +1,6 @@
 package org.bee.fxgallery.ui;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -7,21 +8,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.event.ActionEvent;
 import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
@@ -33,24 +28,23 @@ import org.bee.fxgallery.utils.AppUtils;
  *
  * @author Sleiman Rabah
  */
-public class ManageSpeciesDialog extends Stage implements EventHandler<ActionEvent> {
+public class ManageSpeciesDialog extends Stage {
 
     public enum SpeciesDlgViewMode {
         ADD, UPDATE
     }
-    private Button btnSubmit;
     private TextField txtScientificName;
     private TextField txtCommonName;
     private TextField txtFamily;
     private final Stage parentStage;
     private byte[] bytes;
     private Species mSpecies;
-
     private File mSelectedFile;
     private Label lblErrorMsg;
-    private SpeciesDlgViewMode mViewMode;
+    private ImageView imgSelected;
+    final private SpeciesDlgViewMode mViewMode;
 
-    public ManageSpeciesDialog(Stage owner,Species inSpecies, SpeciesDlgViewMode iViewMode) {
+    public ManageSpeciesDialog(Stage owner, Species inSpecies, SpeciesDlgViewMode iViewMode) {
         this.parentStage = owner;
         mSelectedFile = null;
         this.mViewMode = iViewMode;
@@ -63,86 +57,60 @@ public class ManageSpeciesDialog extends Stage implements EventHandler<ActionEve
     private void initComponents() {
         this.initOwner(this.parentStage);
         this.initModality(Modality.APPLICATION_MODAL);
-        //-- Create the input form.        
-        GridPane root = makeInputForm();
+        // Make the form.
+        Pane root = makeInputForm();
         // If updating a species, load its info into the form controls.
-        if (mViewMode == SpeciesDlgViewMode.UPDATE){
+        if (mViewMode == SpeciesDlgViewMode.UPDATE) {
             txtCommonName.setText(mSpecies.getCommonName());
             txtFamily.setText(mSpecies.getFamily());
             txtScientificName.setText(mSpecies.getScientificName());
+            setSelectedImage(mSpecies.getImageBytes());
+            this.bytes = mSpecies.getImageBytes();
         }
         //--
-        Scene dialogScene = new Scene(root, 500, 400);
+        Scene dialogScene = new Scene(root, 700, 400);
         dialogScene.getStylesheets().add(getClass().getResource(AppUtils.APP_STYLE_SHEETS).toExternalForm());
         this.setScene(dialogScene);
         this.setTitle("Bee's Gallery - Add New Image");
         this.setScene(dialogScene);
     }
 
-    @Override
-    public void handle(ActionEvent event) {
-        //-- Handle the submitt event.
-        if (event.getSource() == btnSubmit) {
-            this.close();
-        }
-    }
-
     public String getFirstname() {
         return txtScientificName.getText();
     }
 
-    private GridPane makeInputForm() {
-        GridPane grid = new GridPane();
-        grid.setAlignment(Pos.TOP_LEFT);
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(25, 25, 25, 25));
-        Font labelFont = Font.font("Tahoma", FontWeight.SEMI_BOLD, 15);
-        //-- Label for error messages.
-        lblErrorMsg = AppUtils.makeLabel("ee", labelFont);
+    private Pane makeInputForm() {
+        Pane root = null;
+        try {
+            root = FXMLLoader.load(getClass().getResource(AppUtils.APP_FXML_PATH + "manage_species_dialog.fxml"));
+        } catch (IOException ex) {
+            Logger.getLogger(ManageSpeciesDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        // Lookup nodes in the hierarchy.
+        Label lblDlgTitle = (Label) root.lookup("#lblDlgTitle");
+        lblErrorMsg = (Label) root.lookup("#lblErrorMsg");
         lblErrorMsg.setStyle("-fx-text-fill: red;");
         lblErrorMsg.setVisible(false);
-        grid.add(lblErrorMsg, 0, 0, 2, 1);
-        //-- Form title.
-        Text scenetitle = new Text("Enter information about the new species:");
-        scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-        grid.add(scenetitle, 0, 1, 3, 1);
-        //-- Scientific name.
-        grid.add(AppUtils.makeLabel("Scientific Name:", labelFont), 0, 2);
-        txtScientificName = new TextField();
-        grid.add(txtScientificName, 1, 2);
-        //-- Common name.      
-        grid.add(AppUtils.makeLabel("Common name:", labelFont), 0, 3);
-        txtCommonName = new TextField();
-        grid.add(txtCommonName, 1, 3);
-        //-- Species's family.        
-        grid.add(AppUtils.makeLabel("Family:", labelFont), 0, 4);
-        txtFamily = new TextField();
-        grid.add(txtFamily, 1, 4);
-        //-- Species's image.
-        grid.add(AppUtils.makeLabel("Select an image:", labelFont), 0, 5);
-        Button btnBrowse = new Button("browse...");
-        btnBrowse.setOnAction(this::browseImage);
-        grid.add(btnBrowse, 1, 5);
-        //Horizontal separator
-        Separator hSeparator = new Separator();
-        hSeparator.setMaxWidth(this.getMaxWidth());
-        grid.add(hSeparator, 0, 6, 3, 1);
-        //--Save button.
-        Button btnSave = new Button("Save");
-        btnSave.setOnAction(this::submitForm);
-        //-- Cancel button.
-        Button btnCancel = new Button("Cancel");
+        txtScientificName = (TextField) root.lookup("#txtScientificName");
+        txtCommonName = (TextField) root.lookup("#txtCommonName");
+        txtFamily = (TextField) root.lookup("#txtFamily");
+        imgSelected = (ImageView) root.lookup("#imgSelected");
+        Button btnBrowse = (Button) root.lookup("#btnBrowseImage");
+        Button btnCancel = (Button) root.lookup("#btnCancel");
+        Button btnSubmit = (Button) root.lookup("#btnSave");
+        // Set event handlers.
+        btnBrowse.setOnAction(this::openFileChooser);
+        btnSubmit.setOnAction(this::submitForm);
         btnCancel.setOnAction(e -> this.close());
-        //-- Wrap the control buttons.
-        HBox hbBtn = new HBox(10);
-        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
-        hbBtn.getChildren().addAll(btnSave, btnCancel);
-        grid.add(hbBtn, 1, 8);
-        return grid;
+        // Change the dialog title.
+        if (mViewMode == SpeciesDlgViewMode.UPDATE) {
+            lblDlgTitle.setText("Update information of the selected species");
+        }
+
+        return root;
     }
 
-    private void browseImage(Event e) {
+    private void openFileChooser(Event e) {
         FileChooser imageChooser = new FileChooser();
         imageChooser.setTitle("Select an Image to Add");
         imageChooser.getExtensionFilters().addAll(
@@ -153,8 +121,8 @@ public class ManageSpeciesDialog extends Stage implements EventHandler<ActionEve
             try ( InputStream imageInStream = (InputStream) new FileInputStream(mSelectedFile)) {
                 this.bytes = imageInStream.readAllBytes();
                 System.out.println("You selected: " + mSelectedFile.getAbsolutePath());
-                //TODO: update placehold with the selected path.
-                // You selected:
+                // Show the selected image.
+                setSelectedImage(bytes);
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(ManageSpeciesDialog.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
@@ -163,15 +131,29 @@ public class ManageSpeciesDialog extends Stage implements EventHandler<ActionEve
         }
     }
 
+    private void setSelectedImage(byte[] bytes) {
+        final Image fullImage = new Image(new ByteArrayInputStream(bytes), 250, 0, true, true);
+        imgSelected.setImage(fullImage);
+        imgSelected.setFitWidth(100);
+        imgSelected.setFitHeight(100);
+    }
+
     private void submitForm(Event e) {
         //TODO: !! Validate the dialog.
         String commonName = txtCommonName.getText().trim();
         String scientificName = txtScientificName.getText().trim();
         String family = txtFamily.getText().trim();
         if (!commonName.isEmpty() && !scientificName.isEmpty() && !family.isEmpty()
-                && mSelectedFile != null) {
-            // If valid, create a new species object.            
-            mSpecies = new Species(scientificName, commonName, bytes, family);
+                && this.bytes.length >= 0) {
+            // If valid, create a new species object.                        
+            if (mViewMode == SpeciesDlgViewMode.ADD) {
+                mSpecies = new Species(scientificName, commonName, bytes, family);
+            }else if (mViewMode == SpeciesDlgViewMode.UPDATE) {
+                mSpecies.setCommonName(commonName);
+                mSpecies.setFamily(family);
+                mSpecies.setScientificName(scientificName);
+                mSpecies.setImageBytes(bytes);
+            }
             // Finally, submit the form.
             close();
         } else {
