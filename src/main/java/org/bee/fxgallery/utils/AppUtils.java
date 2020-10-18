@@ -26,7 +26,7 @@ import javafx.scene.text.Font;
 public class AppUtils {
 
     public static String APP_ICON = "/icons/bee.png";
-    public static String APP_STYLE_SHEETS = "/style/styles.css";
+    public static String APP_STYLE_SHEETS = "/css/styles.css";
     public static String APP_FXML_PATH = "/fxml/" ;
 
     public static Label makeLabel(String labelText, Font labelFont) {

@@ -67,12 +67,12 @@ public class SpeciesController {
             while (rSet.next()) {
                 String scientificName = rSet.getString(COL_SCIENTIFIC_NAME);
                 int speciesId = rSet.getInt(COL_ID);
-                String birdName = rSet.getString(COL_COMMON_NAME);
+                String commonName = rSet.getString(COL_COMMON_NAME);
                 String family = rSet.getString(COL_FAMILY);
                 InputStream imageStream = rSet.getBinaryStream(COL_IMAGE);
                 byte[] bytes = imageStream.readAllBytes();
-                Species bird = new Species(speciesId, scientificName, birdName, bytes, family);
-                species.add(bird);
+                Species newSpecies = new Species(speciesId, scientificName, commonName, bytes, family);
+                species.add(newSpecies);
             }
 
         } catch (SQLException ex) {
@@ -82,11 +82,11 @@ public class SpeciesController {
         return species;
     }
 
-    public void deleteItem(Species inBird) {
+    public void deleteSpecies(Species inSpecies) {
         String insertQuery = String.format("DELETE FROM %s WHERE id = ? ", SPECIES_TABLE);
         try ( Connection dbConnection = ConnectionProvider.getInstance().getConnection(databaseName);  PreparedStatement pstmt = dbConnection.prepareStatement(insertQuery)) {
             // set parameters
-            pstmt.setInt(1, inBird.getId());
+            pstmt.setInt(1, inSpecies.getId());
             pstmt.executeUpdate();
             System.out.println("The selected item has been removed from there DB...");
         } catch (SQLException ex) {

@@ -16,12 +16,20 @@
  */
 package org.bee.fxgallery;
 
+import com.jfoenix.assets.JFoenixResources;
+import com.jfoenix.controls.JFXDecorator;
+import com.jfoenix.svg.SVGGlyph;
+import com.jfoenix.svg.SVGGlyphLoader;
+import java.io.IOException;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.bee.fxgallery.ui.controller.FXMLGalleryController;
 import org.bee.fxgallery.utils.AppConstants;
@@ -37,22 +45,56 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(AppUtils.APP_FXML_PATH + "main.fxml"));
-        Parent root = loader.load();
+        BorderPane root = (BorderPane) loader.load();
         FXMLGalleryController controller = (FXMLGalleryController) loader.getController();
         controller.setMainStage(stage);
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource(AppUtils.APP_STYLE_SHEETS).toExternalForm());
+        root.setStyle("-fx-background-color: white;");
+
+        new Thread(() -> {
+            try {
+                SVGGlyphLoader.loadGlyphsFont(Main.class.getResourceAsStream("/fonts/icomoon.svg"),
+                        "icomoon.svg");
+            } catch (IOException ioExc) {
+                ioExc.printStackTrace();
+            }
+        }).start();
+
+        JFXDecorator decorator = new JFXDecorator(stage, root);
+        decorator.setCustomMaximize(true);
+        decorator.setGraphic(new SVGGlyph(""));
+
+        stage.setTitle("JFoenix Demo");
+
+        double width = 800;
+        double height = 600;
+        try {
+            Rectangle2D bounds = Screen.getScreens().get(0).getBounds();
+            width = bounds.getWidth() / 2.5;
+            height = bounds.getHeight() / 1.35;
+        } catch (Exception e) {
+        }
+        Scene scene = new Scene(decorator, width, height);
+        final ObservableList<String> stylesheets = scene.getStylesheets();
+        stylesheets.addAll(JFoenixResources.load("css/jfoenix-fonts.css").toExternalForm(),
+                JFoenixResources.load("css/jfoenix-design.css").toExternalForm(),
+                getClass().getResource("/css/jfoenix-main-demo.css").toExternalForm(),
+                getClass().getResource(AppUtils.APP_STYLE_SHEETS).toExternalForm()
+        );
+        
         stage.setTitle(AppConstants.APP_TITLE);
-        stage.setScene(scene);
-        stage.show();
+        
+        root.prefHeightProperty().bind(scene.heightProperty());
+        root.prefWidthProperty().bind(scene.widthProperty());
+        stage.setScene(scene);        
         stage.setOnCloseRequest(e -> Platform.exit());
         stage.getIcons().add(new Image(getClass().getResourceAsStream(AppUtils.APP_ICON)));
-
+        stage.show();
     }
 
     public static void main(String[] args) {
         launch(args);
     }
+
     @Override
     public void stop() throws Exception {
         Platform.exit();

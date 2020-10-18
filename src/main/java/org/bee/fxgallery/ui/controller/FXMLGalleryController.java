@@ -48,6 +48,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -56,6 +57,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.bee.fxgallery.db.controller.SpeciesController;
 import org.bee.fxgallery.db.model.Species;
@@ -79,12 +81,12 @@ public class FXMLGalleryController implements Initializable {
     private Button btnAddImage;
     private Stage mainStage;
 
-    private SpeciesController birdsController;
+    private SpeciesController mSpeciesController;
     private File file = null;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        birdsController = new SpeciesController();
+        mSpeciesController = new SpeciesController();
         // Set events on corresponding controls.
         btnAddImage.setOnAction(this::handleButtonActions);
         menuClose.setOnAction(this::handleMenuBarMenuAction);
@@ -97,20 +99,21 @@ public class FXMLGalleryController implements Initializable {
     private void loadImages() {
         //TODO: fix the scrolling issue.
 //        imgScrollPane.setPrefSize(1000, 900);
-        imgScrollPane.setStyle("-fx-background-color: DAE6F3;");
+        imgScrollPane.setStyle("-fx-background-color: wite;");
         imagesPane.setPadding(new Insets(15, 15, 15, 15));
         imagesPane.setHgap(10);
         imagesPane.setVgap(10);
+        imagesPane.setStyle("-fx-background-color: white;");
         try {
-            //-- Read the list of birds along with their images stored in the DB.
-            List<Species> birds = birdsController.getSpecies();
-            for (Species bird : birds) {
-                VBox cardBox = createImageCard(bird);
+            //-- Read the list of species along with their images stored in the DB.
+            List<Species> listOfSpecies = mSpeciesController.getSpecies();
+            for (Species species : listOfSpecies) {
+                VBox cardBox = createImageCard(species);
                 //-- Add the new card to the main panel.
                 imagesPane.getChildren().addAll(cardBox);
             }
-            imgScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-            imgScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+            imgScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+            imgScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
             imgScrollPane.setFitToWidth(true);
         } catch (SQLException ex) {
             Logger.getLogger(FXMLGalleryController.class.getName()).log(Level.SEVERE, null, ex);
@@ -119,7 +122,6 @@ public class FXMLGalleryController implements Initializable {
         }
     }
 
-    @FXML
     private void handleButtonActions(Event e) {
         if (e.getSource() == btnAddImage) {
             System.out.println("Adding a new image.");
@@ -128,7 +130,6 @@ public class FXMLGalleryController implements Initializable {
         }
     }
 
-    @FXML
     private void handleMenuBarMenuAction(Event e) {
         if (e.getSource() == menuClose) {
             if (mainStage != null) {
@@ -143,10 +144,10 @@ public class FXMLGalleryController implements Initializable {
         ManageSpeciesDialog dlgAddImage = new ManageSpeciesDialog(this.mainStage, null, SpeciesDlgViewMode.ADD);
         dlgAddImage.showAndWait();
         //-- Retreive what the user entered in the dialog box.        
-        Species newBird = dlgAddImage.getSpecies();
-        if (newBird != null) {
-            birdsController.addNewSpecies(newBird);
-            VBox imageCard = createImageCard(newBird);
+        Species newSpecies = dlgAddImage.getSpecies();
+        if (newSpecies != null) {
+            mSpeciesController.addNewSpecies(newSpecies);
+            VBox imageCard = createImageCard(newSpecies);
             imagesPane.getChildren().add(imageCard);
             System.out.println("You entered: " + dlgAddImage.getFirstname());
         }
@@ -159,7 +160,7 @@ public class FXMLGalleryController implements Initializable {
         Species updatedSpecies = dlgAddImage.getSpecies();
         if (updatedSpecies != null) {
             // Update species's info.
-            birdsController.updateSpecies(updatedSpecies);
+            mSpeciesController.updateSpecies(updatedSpecies);
             // Delete old card.
             imagesPane.getChildren().remove(cardBox);
             // Make new one.
@@ -168,16 +169,16 @@ public class FXMLGalleryController implements Initializable {
         }
     }
 
-    private void deleteSelectedImage(VBox cardBox, Species inBird) {
-        System.out.println("Delete bird: " + inBird.getCommonName());
+    private void deleteSelectedImage(VBox cardBox, Species inSpecies) {
+        System.out.println("Delete species: " + inSpecies.getCommonName());
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle("Comfirm Delete Image");
-        alert.setHeaderText(String.format("Are you sure you want to delete: %s?", inBird.getCommonName()));
+        alert.setHeaderText(String.format("Are you sure you want to delete: %s?", inSpecies.getCommonName()));
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             System.out.println("Go ahead and delete!");
             imagesPane.getChildren().remove(cardBox);
-            birdsController.deleteItem(inBird);
+            mSpeciesController.deleteSpecies(inSpecies);
         } else {
             System.out.println("User clicked on No!");
         }
@@ -193,18 +194,25 @@ public class FXMLGalleryController implements Initializable {
             // Set up the item's contect menu.
             ContextMenu contextMenu = new ContextMenu();
             MenuItem menuView = new MenuItem("View");
-            menuView.setGraphic(FontAwesomeIconFactory.get().createIcon(FontAwesomeIcon.EYE, "1.5em"));
+            Text glyphStyle = FontAwesomeIconFactory.get().createIcon(FontAwesomeIcon.EYE, "1.5em");
+            glyphStyle.getStyleClass().add("fxfa-custom-ctxmenu");
+            menuView.setGraphic(glyphStyle);
+            //
             MenuItem menuUpdate = new MenuItem("Update");
-            menuUpdate.setGraphic(FontAwesomeIconFactory.get().createIcon(FontAwesomeIcon.EDIT, "1.5em"));
+            glyphStyle = FontAwesomeIconFactory.get().createIcon(FontAwesomeIcon.EDIT, "1.5em");
+            glyphStyle.getStyleClass().add("fxfa-custom-ctxmenu");
+            menuUpdate.setGraphic(glyphStyle);
+            //
             MenuItem menuDelete = new MenuItem("Delete");
-            menuDelete.setGraphic(FontAwesomeIconFactory.get().createIcon(FontAwesomeIcon.REMOVE, "1.5em"));
+            glyphStyle = FontAwesomeIconFactory.get().createIcon(FontAwesomeIcon.REMOVE, "1.5em");
+            glyphStyle.getStyleClass().add("fxfa-custom-ctxmenu");
+            menuDelete.setGraphic(glyphStyle);
             // Set menu's event handlers
             menuView.setOnAction(e -> viewImage(inSpecies));
             menuDelete.setOnAction(e -> deleteSelectedImage(cardBox, inSpecies));
             menuUpdate.setOnAction(e -> UpdateSpecies(cardBox, inSpecies));
             //
-            contextMenu.getItems().addAll(menuView, menuUpdate, menuDelete);
-
+            contextMenu.getItems().addAll(menuView, new SeparatorMenuItem(), menuUpdate, new SeparatorMenuItem(), menuDelete);
             btnContextMenu.setGraphic(FontAwesomeIconFactory.get().createIcon(FontAwesomeIcon.ELLIPSIS_V, "1.5em"));
             btnContextMenu.setAlignment(Pos.BOTTOM_RIGHT);
             // bind the menu to a node of you scene e.g. canvas            
@@ -220,7 +228,6 @@ public class FXMLGalleryController implements Initializable {
             InputStream myInputStream = new ByteArrayInputStream(inSpecies.getImageBytes());
             final Image fullImage = new Image(myInputStream, 250, 0, true, true);
             ImageView imgSpecies = new ImageView(fullImage);
-            imgSpecies.setCursor(Cursor.HAND);
             imgSpecies.setFitWidth(100);
             imgSpecies.setFitHeight(100);
             Tooltip.install(imgSpecies, new Tooltip(inSpecies.getCommonName()));

@@ -1,0 +1,68 @@
+/* 
+    Created on : Jul 27, 2020, 3:12:55 AM
+    Author     : Sleiman Rabah
+*/
+
+.label {
+    -fx-text-fill: black;    
+}
+
+.lblErrorMsg {
+    -fx-text-fill: red;    
+}
+
+/*-fx-background-radius: 8;	*/
+.card-box {        
+    -fx-padding: 5;
+    -fx-margin: 10 0 0 0;	
+    -fx-border-width: 2;
+    -fx-border-radius: 8;	
+    -fx-border-color: rgba(0,0,0,.10);
+    -fx-background-insets: 5; 	
+    -fx-background-radius: 8;
+    /*-fx-effect: dropshadow(three-pass-box, #dcdcdc, 10, 0, 0, 5);*/
+}
+
+
+.hbox-with-margin {
+    -fx-padding: 5px;
+    -fx-border-insets: 5px;
+    -fx-background-insets: 5px;
+}
+
+/*Style rules fo JFoenix buttons*/
+.fx-btn{
+    -fx-text-fill:white;
+    -fx-background-color:#5264AE;
+    -fx-font-size:14px;       
+}
+.fx-btn-primary {    
+    -fx-background-color:#5264AE;    
+    -fx-font-size:14px;     
+    -fx-text-fill:white;
+}
+.fx-btn-success {    
+    -fx-background-color: #5cb85c;   
+    -fx-font-size:14px;     
+    -fx-text-fill:white;
+}
+
+.fx-btn-danger {    
+    -fx-background-color: #d9534f;   
+    -fx-font-size:14px;     
+    -fx-text-fill:white;
+}
+
+.fxfa-custom-glyphs {   
+    -icons-color: WHITE;
+    -fx-fill: white;
+}
+
+
+.fxfa-custom-ctxmenu {   
+    -icons-color: blue;
+    -fx-fill: blue;
+}
+
+
+

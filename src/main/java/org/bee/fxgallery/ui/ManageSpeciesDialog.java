@@ -57,6 +57,7 @@ public class ManageSpeciesDialog extends Stage {
     private void initComponents() {
         this.initOwner(this.parentStage);
         this.initModality(Modality.APPLICATION_MODAL);
+        getIcons().add(new Image(getClass().getResourceAsStream(AppUtils.APP_ICON)));
         // Make the form.
         Pane root = makeInputForm();
         // If updating a species, load its info into the form controls.
@@ -68,8 +69,8 @@ public class ManageSpeciesDialog extends Stage {
             this.bytes = mSpecies.getImageBytes();
         }
         //--
-        Scene dialogScene = new Scene(root, 700, 400);
-        dialogScene.getStylesheets().add(getClass().getResource(AppUtils.APP_STYLE_SHEETS).toExternalForm());
+        Scene dialogScene = new Scene(root, 700, 550);
+        dialogScene.getStylesheets().add(getClass().getResource(AppUtils.APP_STYLE_SHEETS).toExternalForm());        
         this.setScene(dialogScene);
         this.setTitle("Bee's Gallery - Add New Image");
         this.setScene(dialogScene);
@@ -155,7 +156,7 @@ public class ManageSpeciesDialog extends Stage {
                 mSpecies.setImageBytes(bytes);
             }
             // Finally, submit the form.
-            close();
+            this.close();
         } else {
             //-- Invalid form! Display an error message.            
             String errorMsg = "Error: you must fill out all the fields and select an image!";

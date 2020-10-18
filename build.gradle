@@ -12,6 +12,8 @@ description = 'A JavaFX Image Gallery'
 group = 'org.bee'
 
 mainClassName = 'org.bee.fxgallery.Main'
+//mainClassName = 'org.bee.fxgallery.TestZooming'
+//mainClassName = 'org.bee.fxgallery.Driver'
 //mainClassName = 'org.bee.fxgallery.PlutoExplorer'
 
 repositories {    
@@ -28,6 +30,7 @@ dependencies {
     implementation 'de.jensd:fontawesomefx-fontawesome:4.7.0-9.1.2'
 //    implementation  'de.jensd:fontawesomefx-controls:9.1.2'
     implementation 'de.jensd:fontawesomefx-materialdesignfont:2.0.26-9.1.2'
+    implementation 'com.jfoenix:jfoenix:9.0.10'
 //    implementation 'de.jensd:fontawesomefx:8.9'
 
 

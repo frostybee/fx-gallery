@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXSlider?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+
+<VBox stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.bee.fxgallery.ui.controller.FXMLImageViewerController">
+   <children>
+      <ToolBar prefHeight="110.0" prefWidth="745.0">
+        <items>
+            <HBox alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="100.0">
+               <children>
+                  <JFXButton fx:id="btnReset" buttonType="RAISED" styleClass="fx-btn-primary" text="Reset" />
+                  <Separator orientation="VERTICAL" prefHeight="200.0">
+                     <HBox.margin>
+                        <Insets left="5.0" />
+                     </HBox.margin>
+                  </Separator>
+                  <JFXButton fx:id="btnFullView" buttonType="RAISED" styleClass="fx-btn-danger" text="Full View">
+                     <HBox.margin>
+                        <Insets left="5.0" />
+                     </HBox.margin>
+                  </JFXButton>
+                  <Separator orientation="VERTICAL" prefHeight="200.0">
+                     <HBox.margin>
+                        <Insets left="5.0" />
+                     </HBox.margin>
+                  </Separator>
+               </children>
+            </HBox>
+            <HBox>
+               <children>
+                  <Label text="Zoom:" />
+                  <JFXSlider fx:id="zoomSlider">
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                  </JFXSlider>
+               </children>
+               <padding>
+                  <Insets top="45.0" />
+               </padding>
+            </HBox>
+        </items>
+      </ToolBar>
+      <Pane fx:id="pnImageContainer">
+         <children>
+            <ImageView fx:id="imgGraphic" fitHeight="200.0" fitWidth="500.0" pickOnBounds="true" preserveRatio="true" />
+         </children>
+      </Pane>
+   </children>
+</VBox>

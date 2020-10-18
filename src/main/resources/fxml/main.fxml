@@ -9,9 +9,12 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
+<?import com.jfoenix.controls.*?>
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 
-<BorderPane  maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.bee.fxgallery.ui.controller.FXMLGalleryController">         
+<BorderPane  maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" 
+             minWidth="-Infinity" 
+             prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.bee.fxgallery.ui.controller.FXMLGalleryController">         
     <top>
         <VBox fx:id="vBox" prefWidth="100.0" BorderPane.alignment="CENTER">
             <children>
@@ -21,8 +24,8 @@
                             <items>
                                 <MenuItem fx:id="menuClose" mnemonicParsing="false" text="Close">
                                     <graphic>
-                                <FontAwesomeIconView glyphName="CLOSE" glyphSize="16"/>
-                            </graphic>    
+                                        <FontAwesomeIconView glyphName="CLOSE" glyphSize="16"/>
+                                    </graphic>    
                                 </MenuItem>
                             </items>
                         </Menu>          
@@ -34,13 +37,15 @@
                     </menus>
                 </MenuBar>
                 <ToolBar prefHeight="40.0" prefWidth="200.0" >
-                    <items>
-                        <Button fx:id="btnAddImage" mnemonicParsing="true" text=" Species">                            
-                            <!--<FontAwesomeIcon  iconName="CIRCLE" size="24pt" />-->             
-                            <graphic>
-                                <FontAwesomeIconView glyphName="PLUS" glyphSize="24"/>
-                            </graphic>            
-                        </Button>                        
+                    <items>                      
+                        <JFXButton fx:id="btnAddImage" mnemonicParsing="true" text=" Species" prefWidth="100" prefHeight="40" buttonType="RAISED" 
+                                   styleClass="fx-btn-primary">
+                        
+                        <!--<FontAwesomeIcon  iconName="CIRCLE" size="24pt" />-->             
+                        <graphic>
+                            <FontAwesomeIconView glyphName="PLUS" glyphSize="24" styleClass="fxfa-custom-glyphs"/>
+                        </graphic>            
+                    </JFXButton>                        
                     </items>
                 </ToolBar>
             </children>
@@ -48,7 +53,7 @@
     </top>
     <center>        
         <ScrollPane  BorderPane.alignment="CENTER" fx:id="imgScrollPane">
-            <TilePane fx:id="imagesPane" prefHeight="200.0" prefWidth="200.0" >
+            <TilePane fx:id="imagesPane">
             </TilePane>
         </ScrollPane>
     </center>

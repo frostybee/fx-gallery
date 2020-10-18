@@ -16,19 +16,18 @@
  */
 package org.bee.fxgallery.ui;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.bee.fxgallery.db.model.Species;
-import org.bee.fxgallery.ui.controller.FXMLGalleryController;
+import org.bee.fxgallery.ui.controller.FXMLImageViewerController;
+import org.bee.fxgallery.utils.AppUtils;
 
 /**
  *
@@ -37,7 +36,7 @@ import org.bee.fxgallery.ui.controller.FXMLGalleryController;
 public class ViewImageDialog extends Stage {
 
     private Stage mParentWindow = null;
-    private Species mSpecies = null;   
+    private Species mSpecies = null;
 
     public ViewImageDialog(Stage owner, Species inSpecies) {
         this.mParentWindow = owner;
@@ -48,29 +47,24 @@ public class ViewImageDialog extends Stage {
     private void initComponents() {
         this.initOwner(this.mParentWindow);
         this.initModality(Modality.WINDOW_MODAL);
-        //-- Create and set an image view.
+        getIcons().add(new Image(getClass().getResourceAsStream(AppUtils.APP_ICON)));
+
+        VBox root = null;
         try {
-            InputStream myInputStream = new ByteArrayInputStream(mSpecies.getImageBytes());
-            final Image fullImage = new Image(myInputStream);
-            BorderPane borderPane = new BorderPane();
-            ImageView imageView = new ImageView();
-            imageView.setImage(fullImage);
-            imageView.setStyle("-fx-background-color: BLACK");
-            imageView.setFitHeight(this.mParentWindow.getHeight() - 10);
-            imageView.setPreserveRatio(true);
-            imageView.setSmooth(true);
-            imageView.setCache(true);
-            borderPane.setCenter(imageView);
-            borderPane.setStyle("-fx-background-color: BLACK");
-            //-- Customize this window.            
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(AppUtils.APP_FXML_PATH + "image_viewer_dialog.fxml"));
+            root = loader.load();
+            FXMLImageViewerController controller = (FXMLImageViewerController) loader.getController();
+            controller.setMainStage(this);
+            controller.setSpecies(mSpecies);
+            controller.loadImage();
+            root.setFillWidth(true);
+            Scene dialogScene = new Scene(root);
             this.setWidth(this.mParentWindow.getWidth() + 100);
             this.setHeight(this.mParentWindow.getHeight() + 100);
             this.setTitle(this.mSpecies.getCommonName());
-            Scene scene = new Scene(borderPane, Color.BLACK);
-            this.getIcons().add(this.mParentWindow.getIcons().get(0));
-            this.setScene(scene);            
-        } catch (Exception ex) {
-            Logger.getLogger(FXMLGalleryController.class.getName()).log(Level.SEVERE, null, ex);
+            this.setScene(dialogScene);
+        } catch (IOException ex) {
+            Logger.getLogger(ManageSpeciesDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
