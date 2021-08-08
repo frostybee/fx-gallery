@@ -11,50 +11,66 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-
 <VBox stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.bee.fxgallery.ui.controller.FXMLImageViewerController">
-   <children>
-      <ToolBar prefHeight="110.0" prefWidth="745.0">
-        <items>
-            <HBox alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="100.0">
+    <children>
+        <ToolBar prefWidth="745.0">
+            <items>
+                <HBox alignment="CENTER" maxWidth="1.7976931348623157E308">
+                    <children>
+                        <JFXButton fx:id="btnReset" buttonType="RAISED" styleClass="fx-btn-primary" text="Reset" />
+                        <Separator orientation="VERTICAL">
+                            <HBox.margin>
+                                <Insets left="5.0" />
+                            </HBox.margin>
+                        </Separator>
+                        <JFXButton fx:id="btnFullView" buttonType="RAISED" styleClass="fx-btn-danger" text="Full View">
+                            <HBox.margin>
+                                <Insets left="5.0" />
+                            </HBox.margin>
+                        </JFXButton>
+                        <Separator orientation="VERTICAL">
+                            <HBox.margin>
+                                <Insets left="5.0" />
+                            </HBox.margin>
+                        </Separator>
+                    </children>
+                </HBox>
+                <HBox>
+                    <children>
+                        <Label text="Zoom:" />
+                        <JFXSlider fx:id="zoomSlider">
+                            <HBox.margin>
+                                <Insets left="10.0" />
+                            </HBox.margin>
+                        </JFXSlider>
+                    </children>
+                    <padding>
+                        <Insets top="45.0" />
+                    </padding>
+                </HBox>
+            <VBox>
                <children>
-                  <JFXButton fx:id="btnReset" buttonType="RAISED" styleClass="fx-btn-primary" text="Reset" />
-                  <Separator orientation="VERTICAL" prefHeight="200.0">
-                     <HBox.margin>
-                        <Insets left="5.0" />
-                     </HBox.margin>
-                  </Separator>
-                  <JFXButton fx:id="btnFullView" buttonType="RAISED" styleClass="fx-btn-danger" text="Full View">
-                     <HBox.margin>
-                        <Insets left="5.0" />
-                     </HBox.margin>
-                  </JFXButton>
-                  <Separator orientation="VERTICAL" prefHeight="200.0">
-                     <HBox.margin>
-                        <Insets left="5.0" />
-                     </HBox.margin>
-                  </Separator>
-               </children>
-            </HBox>
-            <HBox>
-               <children>
-                  <Label text="Zoom:" />
-                  <JFXSlider fx:id="zoomSlider">
-                     <HBox.margin>
-                        <Insets left="10.0" />
-                     </HBox.margin>
-                  </JFXSlider>
+                  <Label text="Family:" />
+                  <Label alignment="TOP_LEFT" text="Common name:" />
+                  <Label text="Scientific name:" />
                </children>
                <padding>
-                  <Insets top="45.0" />
+                  <Insets right="10.0" />
                </padding>
-            </HBox>
-        </items>
-      </ToolBar>
-      <Pane fx:id="pnImageContainer">
-         <children>
-            <ImageView fx:id="imgGraphic" fitHeight="200.0" fitWidth="500.0" pickOnBounds="true" preserveRatio="true" />
-         </children>
-      </Pane>
-   </children>
+            </VBox>
+            <VBox>
+               <children>
+                  <Label fx:id="lblFamilyName" />
+                  <Label fx:id="lblCommonName" />
+                  <Label fx:id="lblScientificName" />
+               </children>
+            </VBox>
+            </items>
+        </ToolBar>
+        <Pane fx:id="pnImageContainer">
+            <children>
+                <ImageView fx:id="imgGraphic" fitHeight="200.0" fitWidth="500.0" pickOnBounds="true" preserveRatio="true" />
+            </children>
+        </Pane>
+    </children>
 </VBox>

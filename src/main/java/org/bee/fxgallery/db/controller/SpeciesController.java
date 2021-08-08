@@ -17,7 +17,7 @@ import org.bee.fxgallery.db.model.Species;
  * @author Sleiman Rabah
  */
 public class SpeciesController {
-
+   
     private final String databaseName = "species.db";
     private final String SPECIES_TABLE = "species";
     //-- Table columns
@@ -107,7 +107,9 @@ public class SpeciesController {
             pstmt.executeUpdate();
             System.out.println("Updated entry's ID: " + inSpecies.getId());
         } catch (SQLException ex) {
-            System.err.println("An error has occured while trying to execute query: " + insertQuery);
+            
+            java.lang.System.err.println("An error has occured while trying to execute query: " + insertQuery);
+            
             System.err.println("Error message: " + ex);
         }
     }

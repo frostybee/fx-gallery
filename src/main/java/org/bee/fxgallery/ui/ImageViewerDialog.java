@@ -16,12 +16,16 @@
  */
 package org.bee.fxgallery.ui;
 
+import com.jfoenix.assets.JFoenixResources;
+import com.jfoenix.controls.JFXDecorator;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -33,12 +37,12 @@ import org.bee.fxgallery.utils.AppUtils;
  *
  * @author Sleiman Rabah
  */
-public class ViewImageDialog extends Stage {
+public class ImageViewerDialog extends Stage {
 
     private Stage mParentWindow = null;
     private Species mSpecies = null;
 
-    public ViewImageDialog(Stage owner, Species inSpecies) {
+    public ImageViewerDialog(Stage owner, Species inSpecies) {
         this.mParentWindow = owner;
         this.mSpecies = inSpecies;
         initComponents();
@@ -58,11 +62,22 @@ public class ViewImageDialog extends Stage {
             controller.setSpecies(mSpecies);
             controller.loadImage();
             root.setFillWidth(true);
-            Scene dialogScene = new Scene(root);
+            //Scene dialogScene = new Scene(root);
+            JFXDecorator decorator = new JFXDecorator(this, root);
+            decorator.setCustomMaximize(true);
+            decorator.setGraphic( new ImageView(new Image(getClass().getResourceAsStream(AppUtils.APP_ICON))));
+
+            Scene dialogScene = new Scene(decorator, 400, 300);
+            final ObservableList<String> stylesheets = dialogScene.getStylesheets();
+            stylesheets.addAll(JFoenixResources.load("css/jfoenix-fonts.css").toExternalForm(),
+                    JFoenixResources.load("css/jfoenix-design.css").toExternalForm(),
+                    getClass().getResource("/css/jfoenix-main-demo.css").toExternalForm()
+            );
             this.setWidth(this.mParentWindow.getWidth() + 100);
-            this.setHeight(this.mParentWindow.getHeight() + 100);
+            this.setHeight(this.mParentWindow.getHeight());
             this.setTitle(this.mSpecies.getCommonName());
             this.setScene(dialogScene);
+
         } catch (IOException ex) {
             Logger.getLogger(ManageSpeciesDialog.class.getName()).log(Level.SEVERE, null, ex);
         }

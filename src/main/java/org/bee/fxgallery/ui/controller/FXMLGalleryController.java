@@ -38,8 +38,8 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.scene.Cursor;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -48,6 +48,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Separator;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
@@ -58,12 +59,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import org.bee.fxgallery.db.controller.SpeciesController;
 import org.bee.fxgallery.db.model.Species;
+import org.bee.fxgallery.ui.AboutDialog;
 import org.bee.fxgallery.ui.ManageSpeciesDialog;
 import org.bee.fxgallery.ui.ManageSpeciesDialog.SpeciesDlgViewMode;
-import org.bee.fxgallery.ui.ViewImageDialog;
+import org.bee.fxgallery.ui.ImageViewerDialog;
 
 public class FXMLGalleryController implements Initializable {
 
@@ -91,13 +94,13 @@ public class FXMLGalleryController implements Initializable {
         btnAddImage.setOnAction(this::handleButtonActions);
         menuClose.setOnAction(this::handleMenuBarMenuAction);
         menuAbout.setOnAction(this::handleMenuBarMenuAction);
-
+        //-- Prepare & and populate the gallery from the DB.         
         loadImages();
-
     }
 
     private void loadImages() {
         //TODO: fix the scrolling issue.
+        //FIXME: fix this.
 //        imgScrollPane.setPrefSize(1000, 900);
         imgScrollPane.setStyle("-fx-background-color: wite;");
         imagesPane.setPadding(new Insets(15, 15, 15, 15));
@@ -137,6 +140,8 @@ public class FXMLGalleryController implements Initializable {
             }
         } else if (e.getSource() == menuAbout) {
             // Open about dialog
+            AboutDialog aboutDlg = new AboutDialog(mainStage);
+            aboutDlg.showAndWait();
         }
     }
 
@@ -158,14 +163,16 @@ public class FXMLGalleryController implements Initializable {
         dlgAddImage.showAndWait();
         //-- Retreive what the user entered in the dialog box.        
         Species updatedSpecies = dlgAddImage.getSpecies();
-        if (updatedSpecies != null) {
-            // Update species's info.
-            mSpeciesController.updateSpecies(updatedSpecies);
-            // Delete old card.
-            imagesPane.getChildren().remove(cardBox);
-            // Make new one.
-            VBox imageCard = createImageCard(updatedSpecies);
-            imagesPane.getChildren().add(imageCard);
+        if (!dlgAddImage.isCancled()) {
+            if (updatedSpecies != null) {
+                // Update species's info.
+                mSpeciesController.updateSpecies(updatedSpecies);
+                // Delete old card.
+                imagesPane.getChildren().remove(cardBox);
+                // Make new one.
+                VBox imageCard = createImageCard(updatedSpecies);
+                imagesPane.getChildren().add(imageCard);
+            }
         }
     }
 
@@ -176,11 +183,8 @@ public class FXMLGalleryController implements Initializable {
         alert.setHeaderText(String.format("Are you sure you want to delete: %s?", inSpecies.getCommonName()));
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
-            System.out.println("Go ahead and delete!");
             imagesPane.getChildren().remove(cardBox);
             mSpeciesController.deleteSpecies(inSpecies);
-        } else {
-            System.out.println("User clicked on No!");
         }
     }
 
@@ -190,29 +194,21 @@ public class FXMLGalleryController implements Initializable {
             HBox controlButtons = new HBox();
             Button btnContextMenu = new Button();
             Label lblImgCaption = new Label();
-            lblImgCaption.setText(inSpecies.getCommonName());
+            String strImgCaption = inSpecies.getCommonName().trim();
+            if (!strImgCaption.isEmpty()) {
+                if (strImgCaption.length() > 20) {
+                    strImgCaption = strImgCaption.substring(0, 15);
+                    strImgCaption += "...";
+                }
+            }
+            lblImgCaption.setText(strImgCaption);
+            lblImgCaption.setTextAlignment(TextAlignment.LEFT);
+            lblImgCaption.setWrapText(true);
+            lblImgCaption.setMaxWidth(70);
+            lblImgCaption.getStyleClass().add("sp-img-caption");
             // Set up the item's contect menu.
-            ContextMenu contextMenu = new ContextMenu();
-            MenuItem menuView = new MenuItem("View");
-            Text glyphStyle = FontAwesomeIconFactory.get().createIcon(FontAwesomeIcon.EYE, "1.5em");
-            glyphStyle.getStyleClass().add("fxfa-custom-ctxmenu");
-            menuView.setGraphic(glyphStyle);
-            //
-            MenuItem menuUpdate = new MenuItem("Update");
-            glyphStyle = FontAwesomeIconFactory.get().createIcon(FontAwesomeIcon.EDIT, "1.5em");
-            glyphStyle.getStyleClass().add("fxfa-custom-ctxmenu");
-            menuUpdate.setGraphic(glyphStyle);
-            //
-            MenuItem menuDelete = new MenuItem("Delete");
-            glyphStyle = FontAwesomeIconFactory.get().createIcon(FontAwesomeIcon.REMOVE, "1.5em");
-            glyphStyle.getStyleClass().add("fxfa-custom-ctxmenu");
-            menuDelete.setGraphic(glyphStyle);
-            // Set menu's event handlers
-            menuView.setOnAction(e -> viewImage(inSpecies));
-            menuDelete.setOnAction(e -> deleteSelectedImage(cardBox, inSpecies));
-            menuUpdate.setOnAction(e -> UpdateSpecies(cardBox, inSpecies));
-            //
-            contextMenu.getItems().addAll(menuView, new SeparatorMenuItem(), menuUpdate, new SeparatorMenuItem(), menuDelete);
+            ContextMenu contextMenu = makeContextMenu(cardBox, inSpecies);
+            btnContextMenu.getStyleClass().add("sp-ctx-button");
             btnContextMenu.setGraphic(FontAwesomeIconFactory.get().createIcon(FontAwesomeIcon.ELLIPSIS_V, "1.5em"));
             btnContextMenu.setAlignment(Pos.BOTTOM_RIGHT);
             // bind the menu to a node of you scene e.g. canvas            
@@ -223,13 +219,12 @@ public class FXMLGalleryController implements Initializable {
                     contextMenu.show(btnContextMenu, e.getScreenX(), e.getScreenY());
                 }
             });
-
             //-- Make the card's image.
             InputStream myInputStream = new ByteArrayInputStream(inSpecies.getImageBytes());
             final Image fullImage = new Image(myInputStream, 250, 0, true, true);
             ImageView imgSpecies = new ImageView(fullImage);
-            imgSpecies.setFitWidth(100);
-            imgSpecies.setFitHeight(100);
+            imgSpecies.setFitWidth(140);
+            imgSpecies.setFitHeight(130);            
             Tooltip.install(imgSpecies, new Tooltip(inSpecies.getCommonName()));
             // Enable full image view by double clicking an item in the list.
             imgSpecies.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -243,9 +238,12 @@ public class FXMLGalleryController implements Initializable {
                 }
             });
             //-- Setup the card/          
+            controlButtons.setSpacing(5);
             controlButtons.getStyleClass().add("hbox-with-margin");
-            controlButtons.getChildren().addAll(btnContextMenu);
-            cardBox.getChildren().addAll(imgSpecies, controlButtons);
+            controlButtons.getChildren().addAll(btnContextMenu, lblImgCaption);
+            cardBox.setSpacing(7);
+            //cardBox.getChildren().addAll(imgSpecies, new Separator(Orientation.HORIZONTAL), controlButtons);
+            cardBox.getChildren().addAll(imgSpecies,  controlButtons);
             cardBox.getStyleClass().add("card-box");
 
         } catch (Exception ex) {
@@ -254,9 +252,35 @@ public class FXMLGalleryController implements Initializable {
         return cardBox;
     }
 
+    private ContextMenu makeContextMenu(VBox cardBox, Species inSpecies) {
+        // Set up the item's contect menu.
+        ContextMenu contextMenu = new ContextMenu();
+        MenuItem menuView = new MenuItem("View");
+        Text glyphStyle = FontAwesomeIconFactory.get().createIcon(FontAwesomeIcon.EYE, "1.5em");
+        glyphStyle.getStyleClass().add("fxfa-custom-ctxmenu");
+        menuView.setGraphic(glyphStyle);
+        //
+        MenuItem menuUpdate = new MenuItem("Update");
+        glyphStyle = FontAwesomeIconFactory.get().createIcon(FontAwesomeIcon.EDIT, "1.5em");
+        glyphStyle.getStyleClass().add("fxfa-custom-ctxmenu");
+        menuUpdate.setGraphic(glyphStyle);
+        //
+        MenuItem menuDelete = new MenuItem("Delete");
+        glyphStyle = FontAwesomeIconFactory.get().createIcon(FontAwesomeIcon.REMOVE, "1.5em");
+        glyphStyle.getStyleClass().add("fxfa-custom-ctxmenu");
+        menuDelete.setGraphic(glyphStyle);
+        // Set menu's event handlers
+        menuView.setOnAction(e -> viewImage(inSpecies));
+        menuDelete.setOnAction(e -> deleteSelectedImage(cardBox, inSpecies));
+        menuUpdate.setOnAction(e -> UpdateSpecies(cardBox, inSpecies));
+        //
+        contextMenu.getItems().addAll(menuView, new SeparatorMenuItem(), menuUpdate, new SeparatorMenuItem(), menuDelete);
+        return contextMenu;
+    }
+
     private void viewImage(final Species inSpecies) {
-        ViewImageDialog dlgViewImage = new ViewImageDialog(this.mainStage, inSpecies);
-        dlgViewImage.showAndWait();
+        ImageViewerDialog dlgViewImage = new ImageViewerDialog(this.mainStage, inSpecies);
+        dlgViewImage.showAndWait();        
     }
 
     /**

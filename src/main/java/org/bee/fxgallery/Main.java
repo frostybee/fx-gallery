@@ -18,7 +18,6 @@ package org.bee.fxgallery;
 
 import com.jfoenix.assets.JFoenixResources;
 import com.jfoenix.controls.JFXDecorator;
-import com.jfoenix.svg.SVGGlyph;
 import com.jfoenix.svg.SVGGlyphLoader;
 import java.io.IOException;
 import javafx.application.Application;
@@ -28,11 +27,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.bee.fxgallery.ui.controller.FXMLGalleryController;
-import org.bee.fxgallery.utils.AppConstants;
 import org.bee.fxgallery.utils.AppUtils;
 
 /**
@@ -42,11 +41,11 @@ import org.bee.fxgallery.utils.AppUtils;
  */
 public class Main extends Application {
 
+ 
     @Override
-    public void start(Stage stage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(AppUtils.APP_FXML_PATH + "main.fxml"));
-        BorderPane root = (BorderPane) loader.load();
-        FXMLGalleryController controller = (FXMLGalleryController) loader.getController();
+    public void start(Stage stage) throws Exception {           
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(AppUtils.APP_FXML_PATH + "main_scene.fxml"));
+        BorderPane root = (BorderPane) loader.load();FXMLGalleryController controller = (FXMLGalleryController) loader.getController();
         controller.setMainStage(stage);
         root.setStyle("-fx-background-color: white;");
 
@@ -61,7 +60,7 @@ public class Main extends Application {
 
         JFXDecorator decorator = new JFXDecorator(stage, root);
         decorator.setCustomMaximize(true);
-        decorator.setGraphic(new SVGGlyph(""));
+        decorator.setGraphic( new ImageView(new Image(getClass().getResourceAsStream(AppUtils.APP_ICON))));
 
         stage.setTitle("JFoenix Demo");
 
@@ -80,12 +79,11 @@ public class Main extends Application {
                 getClass().getResource("/css/jfoenix-main-demo.css").toExternalForm(),
                 getClass().getResource(AppUtils.APP_STYLE_SHEETS).toExternalForm()
         );
-        
-        stage.setTitle(AppConstants.APP_TITLE);
-        
+
+        stage.setTitle(AppUtils.APP_TITLE);
         root.prefHeightProperty().bind(scene.heightProperty());
         root.prefWidthProperty().bind(scene.widthProperty());
-        stage.setScene(scene);        
+        stage.setScene(scene);
         stage.setOnCloseRequest(e -> Platform.exit());
         stage.getIcons().add(new Image(getClass().getResourceAsStream(AppUtils.APP_ICON)));
         stage.show();

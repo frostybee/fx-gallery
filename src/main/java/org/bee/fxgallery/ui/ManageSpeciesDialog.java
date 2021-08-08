@@ -1,5 +1,7 @@
 package org.bee.fxgallery.ui;
 
+import com.jfoenix.assets.JFoenixResources;
+import com.jfoenix.controls.JFXDecorator;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -43,11 +46,13 @@ public class ManageSpeciesDialog extends Stage {
     private Label lblErrorMsg;
     private ImageView imgSelected;
     final private SpeciesDlgViewMode mViewMode;
+    private boolean isCancled;
 
     public ManageSpeciesDialog(Stage owner, Species inSpecies, SpeciesDlgViewMode iViewMode) {
         this.parentStage = owner;
         mSelectedFile = null;
         this.mViewMode = iViewMode;
+        isCancled = false;
         if (inSpecies != null) {
             mSpecies = inSpecies;
         }
@@ -57,7 +62,7 @@ public class ManageSpeciesDialog extends Stage {
     private void initComponents() {
         this.initOwner(this.parentStage);
         this.initModality(Modality.APPLICATION_MODAL);
-        getIcons().add(new Image(getClass().getResourceAsStream(AppUtils.APP_ICON)));
+        //getIcons().add(new Image(getClass().getResourceAsStream(AppUtils.APP_ICON)));
         // Make the form.
         Pane root = makeInputForm();
         // If updating a species, load its info into the form controls.
@@ -69,10 +74,25 @@ public class ManageSpeciesDialog extends Stage {
             this.bytes = mSpecies.getImageBytes();
         }
         //--
-        Scene dialogScene = new Scene(root, 700, 550);
-        dialogScene.getStylesheets().add(getClass().getResource(AppUtils.APP_STYLE_SHEETS).toExternalForm());        
+        //Scene dialogScene = new Scene(root);
+        JFXDecorator decorator = new JFXDecorator(this, root);
+        decorator.setCustomMaximize(true);
+        decorator.setGraphic(new ImageView(new Image(getClass().getResourceAsStream(AppUtils.APP_ICON))));
+        Scene dialogScene = new Scene(decorator, 500, 400);
+        //Scene dialogScene = new Scene(root, 700, 550);
+        dialogScene.getStylesheets().add(getClass().getResource(AppUtils.APP_STYLE_SHEETS).toExternalForm());
+        final ObservableList<String> stylesheets = dialogScene.getStylesheets();
+        stylesheets.addAll(JFoenixResources.load("css/jfoenix-fonts.css").toExternalForm(),
+                JFoenixResources.load("css/jfoenix-design.css").toExternalForm(),
+                getClass().getResource("/css/jfoenix-main-demo.css").toExternalForm(),
+                getClass().getResource(AppUtils.APP_STYLE_SHEETS).toExternalForm()
+        );
         this.setScene(dialogScene);
-        this.setTitle("Bee's Gallery - Add New Image");
+        if (mViewMode == SpeciesDlgViewMode.ADD) {
+            this.setTitle(AppUtils.APP_TITLE + " - Add New Species");
+        } else {
+            this.setTitle(AppUtils.APP_TITLE + " - Update Existing Species");
+        }
         this.setScene(dialogScene);
     }
 
@@ -102,7 +122,10 @@ public class ManageSpeciesDialog extends Stage {
         // Set event handlers.
         btnBrowse.setOnAction(this::openFileChooser);
         btnSubmit.setOnAction(this::submitForm);
-        btnCancel.setOnAction(e -> this.close());
+        btnCancel.setOnAction(e -> {
+            isCancled = true;
+            this.close();
+        });
         // Change the dialog title.
         if (mViewMode == SpeciesDlgViewMode.UPDATE) {
             lblDlgTitle.setText("Update information of the selected species");
@@ -149,7 +172,7 @@ public class ManageSpeciesDialog extends Stage {
             // If valid, create a new species object.                        
             if (mViewMode == SpeciesDlgViewMode.ADD) {
                 mSpecies = new Species(scientificName, commonName, bytes, family);
-            }else if (mViewMode == SpeciesDlgViewMode.UPDATE) {
+            } else if (mViewMode == SpeciesDlgViewMode.UPDATE) {
                 mSpecies.setCommonName(commonName);
                 mSpecies.setFamily(family);
                 mSpecies.setScientificName(scientificName);
@@ -172,4 +195,9 @@ public class ManageSpeciesDialog extends Stage {
     public void setSpecies(Species species) {
         this.mSpecies = species;
     }
+
+    public boolean isCancled() {
+        return isCancled;
+    }
+
 }

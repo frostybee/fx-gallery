@@ -33,6 +33,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Cursor;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -58,6 +59,12 @@ public class FXMLImageViewerController implements Initializable {
     private ImageView imgGraphic;
     @FXML
     private Pane pnImageContainer;
+    @FXML
+    private Label lblFamilyName;
+    @FXML
+    private Label lblCommonName;
+    @FXML
+    private Label lblScientificName;
     private Stage parentStage;
     private Species mSpecies;
     private static final int MIN_PIXELS = 10;
@@ -75,6 +82,10 @@ public class FXMLImageViewerController implements Initializable {
 
     public void loadImage() {
         try {
+            //-- Load the info about the selected species.
+            lblCommonName.setText(mSpecies.getCommonName());
+            lblFamilyName.setText(mSpecies.getFamily());
+            lblScientificName.setText(mSpecies.getScientificName());
             //-- Create and set an image view.
             InputStream myInputStream = new ByteArrayInputStream(mSpecies.getImageBytes());
             final Image fullImage = new Image(myInputStream);
@@ -85,7 +96,7 @@ public class FXMLImageViewerController implements Initializable {
             imgGraphic.setPreserveRatio(true);
             imgGraphic.setSmooth(true);
             imgGraphic.setCache(true);
-            imgGraphic.setPreserveRatio(true);
+            imgGraphic.setPreserveRatio(true);            
             //
             configureMouseEvents(width, height);
             //-- Initiliaze the sliding event.
@@ -95,6 +106,7 @@ public class FXMLImageViewerController implements Initializable {
                     zoomImage(newValue);
                 }
             });
+            reset(imgGraphic, width, height);
         } catch (Exception ex) {
             Logger.getLogger(FXMLImageViewerController.class.getName()).log(Level.SEVERE, null, ex);
         }
