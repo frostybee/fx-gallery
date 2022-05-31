@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Sleiman Rabah
+ * Copyright (C) 2020 Sleiman R.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,10 +16,6 @@
  */
 package org.bee.fxgallery.ui.controller;
 
-/**
- *
- * @author Sleiman Rabah
- */
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.utils.FontAwesomeIconFactory;
 import java.io.ByteArrayInputStream;
@@ -38,7 +34,6 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -48,7 +43,6 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Separator;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
@@ -68,6 +62,10 @@ import org.bee.fxgallery.ui.ManageSpeciesDialog;
 import org.bee.fxgallery.ui.ManageSpeciesDialog.SpeciesDlgViewMode;
 import org.bee.fxgallery.ui.ImageViewerDialog;
 
+/**
+ * A class that controls the main window of the gallery.
+ *
+ */
 public class FXMLGalleryController implements Initializable {
 
     @FXML
@@ -98,10 +96,10 @@ public class FXMLGalleryController implements Initializable {
         loadImages();
     }
 
+    /**
+     * Loads into the main window the retrieved images from the database.
+     */
     private void loadImages() {
-        //TODO: fix the scrolling issue.
-        //FIXME: fix this.
-//        imgScrollPane.setPrefSize(1000, 900);
         imgScrollPane.setStyle("-fx-background-color: wite;");
         imagesPane.setPadding(new Insets(15, 15, 15, 15));
         imagesPane.setHgap(10);
@@ -129,7 +127,7 @@ public class FXMLGalleryController implements Initializable {
         if (e.getSource() == btnAddImage) {
             System.out.println("Adding a new image.");
             //-- Select a new image to add to the library.
-            addSpecies();
+            openAddSpeciesDialog();
         }
     }
 
@@ -145,7 +143,10 @@ public class FXMLGalleryController implements Initializable {
         }
     }
 
-    private void addSpecies() {
+    /**
+     * Creates a new window with a form for adding a new species.
+     */
+    private void openAddSpeciesDialog() {
         ManageSpeciesDialog dlgAddImage = new ManageSpeciesDialog(this.mainStage, null, SpeciesDlgViewMode.ADD);
         dlgAddImage.showAndWait();
         //-- Retreive what the user entered in the dialog box.        
@@ -158,7 +159,13 @@ public class FXMLGalleryController implements Initializable {
         }
     }
 
-    private void UpdateSpecies(VBox cardBox, Species existingSpecies) {
+    /**
+     * Creates a new window with a form for updating a species.
+     *
+     * @param cardBox the selected card that contains the species to be updated.
+     * @param existingSpecies the species that needs to be updated.
+     */
+    private void openUpdateSepciesDialog(VBox cardBox, Species existingSpecies) {
         ManageSpeciesDialog dlgAddImage = new ManageSpeciesDialog(this.mainStage, existingSpecies, SpeciesDlgViewMode.UPDATE);
         dlgAddImage.showAndWait();
         //-- Retreive what the user entered in the dialog box.        
@@ -176,6 +183,12 @@ public class FXMLGalleryController implements Initializable {
         }
     }
 
+    /**
+     * Removes an image from the gallery.
+     *
+     * @param cardBox the card that contains the species to be removed.
+     * @param inSpecies the species to be removed.
+     */
     private void deleteSelectedImage(VBox cardBox, Species inSpecies) {
         System.out.println("Delete species: " + inSpecies.getCommonName());
         Alert alert = new Alert(AlertType.CONFIRMATION);
@@ -188,6 +201,12 @@ public class FXMLGalleryController implements Initializable {
         }
     }
 
+    /**
+     * Creates and sets up a card for a species.
+     *
+     * @param inSpecies contains information about the species to be added.
+     * @return the newly created image card.
+     */
     private VBox createImageCard(final Species inSpecies) {
         VBox cardBox = new VBox();
         try {
@@ -224,7 +243,7 @@ public class FXMLGalleryController implements Initializable {
             final Image fullImage = new Image(myInputStream, 250, 0, true, true);
             ImageView imgSpecies = new ImageView(fullImage);
             imgSpecies.setFitWidth(140);
-            imgSpecies.setFitHeight(130);            
+            imgSpecies.setFitHeight(130);
             Tooltip.install(imgSpecies, new Tooltip(inSpecies.getCommonName()));
             // Enable full image view by double clicking an item in the list.
             imgSpecies.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -243,7 +262,7 @@ public class FXMLGalleryController implements Initializable {
             controlButtons.getChildren().addAll(btnContextMenu, lblImgCaption);
             cardBox.setSpacing(7);
             //cardBox.getChildren().addAll(imgSpecies, new Separator(Orientation.HORIZONTAL), controlButtons);
-            cardBox.getChildren().addAll(imgSpecies,  controlButtons);
+            cardBox.getChildren().addAll(imgSpecies, controlButtons);
             cardBox.getStyleClass().add("card-box");
 
         } catch (Exception ex) {
@@ -252,6 +271,12 @@ public class FXMLGalleryController implements Initializable {
         return cardBox;
     }
 
+    /**
+     * Creates a context menu for managing a card stored in the gallery.
+     * @param cardBox the card to which a context menu will be attached.
+     * @param inSpecies the species object embedded in the specified card.
+     * @return the newly created context menu.
+     */
     private ContextMenu makeContextMenu(VBox cardBox, Species inSpecies) {
         // Set up the item's contect menu.
         ContextMenu contextMenu = new ContextMenu();
@@ -272,15 +297,19 @@ public class FXMLGalleryController implements Initializable {
         // Set menu's event handlers
         menuView.setOnAction(e -> viewImage(inSpecies));
         menuDelete.setOnAction(e -> deleteSelectedImage(cardBox, inSpecies));
-        menuUpdate.setOnAction(e -> UpdateSpecies(cardBox, inSpecies));
+        menuUpdate.setOnAction(e -> openUpdateSepciesDialog(cardBox, inSpecies));
         //
         contextMenu.getItems().addAll(menuView, new SeparatorMenuItem(), menuUpdate, new SeparatorMenuItem(), menuDelete);
         return contextMenu;
     }
 
+    /**
+     * Opens a new window for visualizing an image.
+     * @param inSpecies the selected species whose image needs to be visualized.
+     */
     private void viewImage(final Species inSpecies) {
         ImageViewerDialog dlgViewImage = new ImageViewerDialog(this.mainStage, inSpecies);
-        dlgViewImage.showAndWait();        
+        dlgViewImage.showAndWait();
     }
 
     /**

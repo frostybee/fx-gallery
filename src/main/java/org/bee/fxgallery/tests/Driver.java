@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Sleiman Rabah
+ * Copyright (C) 2020 Sleiman R.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,14 +19,13 @@ package org.bee.fxgallery.tests;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.bee.fxgallery.utils.AppUtils;
 
 /**
  *
- * @author Sleiman Rabah
+ *
  */
 public class Driver extends Application {
 

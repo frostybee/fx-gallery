@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Sleiman Rabah
+ * Copyright (C) 2020 Sleiman R.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@ import javafx.scene.text.Font;
 
 /**
  *
- * @author Sleiman Rabah
+ *  
  */
 public class AppUtils {
 

@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2020 Sleiman R.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bee.fxgallery.ui;
 
 import com.jfoenix.assets.JFoenixResources;
@@ -29,7 +45,7 @@ import org.bee.fxgallery.utils.AppUtils;
 
 /**
  *
- * @author Sleiman Rabah
+ *
  */
 public class ManageSpeciesDialog extends Stage {
 
@@ -78,7 +94,7 @@ public class ManageSpeciesDialog extends Stage {
         JFXDecorator decorator = new JFXDecorator(this, root);
         decorator.setCustomMaximize(true);
         decorator.setGraphic(new ImageView(new Image(getClass().getResourceAsStream(AppUtils.APP_ICON))));
-        Scene dialogScene = new Scene(decorator, 500, 400);
+        Scene dialogScene = new Scene(decorator, 700, 500);
         //Scene dialogScene = new Scene(root, 700, 550);
         dialogScene.getStylesheets().add(getClass().getResource(AppUtils.APP_STYLE_SHEETS).toExternalForm());
         final ObservableList<String> stylesheets = dialogScene.getStylesheets();
@@ -162,8 +178,7 @@ public class ManageSpeciesDialog extends Stage {
         imgSelected.setFitHeight(100);
     }
 
-    private void submitForm(Event e) {
-        //TODO: !! Validate the dialog.
+    private void submitForm(Event e) {        
         String commonName = txtCommonName.getText().trim();
         String scientificName = txtScientificName.getText().trim();
         String family = txtFamily.getText().trim();

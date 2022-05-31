@@ -11,7 +11,8 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.bee.fxgallery.ui.controller.FXMLImageViewerController">
+<VBox stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/14" 
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.bee.fxgallery.ui.controller.FXMLImageViewerController">
     <children>
         <ToolBar prefWidth="745.0">
             <items>
@@ -50,9 +51,9 @@
                 </HBox>
             <VBox>
                <children>
-                  <Label text="Family:" />
-                  <Label alignment="TOP_LEFT" text="Common name:" />
-                  <Label text="Scientific name:" />
+                  <Label text="Family:" style="-fx-font-weight: bold"/>
+                  <Label alignment="TOP_LEFT" text="Common name:" style="-fx-font-weight: bold" />
+                  <Label text="Scientific name:" style="-fx-font-weight: bold"/>
                </children>
                <padding>
                   <Insets right="10.0" />

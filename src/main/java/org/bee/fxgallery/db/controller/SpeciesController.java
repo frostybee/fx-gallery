@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2020 Sleiman R.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bee.fxgallery.db.controller;
 
 import java.io.IOException;
@@ -13,7 +29,7 @@ import org.bee.fxgallery.db.helper.ConnectionProvider;
 import org.bee.fxgallery.db.model.Species;
 
 /**
- *
+ * A class that implements CRUD operations performed on species.
  * @author Sleiman Rabah
  */
 public class SpeciesController {
@@ -31,6 +47,10 @@ public class SpeciesController {
     public SpeciesController() {
     }
 
+    /**
+     * Inserts a new species into the attached database. 
+     * @param newSpecies the species to be added. 
+     */
     public void addNewSpecies(Species newSpecies) {
         String insertQuery = String.format("INSERT INTO %s (%s,%s,%s,%s) VALUES(?,?,?,?) ", SPECIES_TABLE, COL_SCIENTIFIC_NAME, COL_COMMON_NAME, COL_IMAGE, COL_FAMILY);
         try ( Connection dbConnection = ConnectionProvider.getInstance().getConnection(databaseName);  PreparedStatement pstmt = dbConnection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
@@ -56,6 +76,12 @@ public class SpeciesController {
 
     }
 
+    /**
+     * Retrieves the list of species from the attached database.
+     * @return a list containing all the species.
+     * @throws SQLException
+     * @throws IOException 
+     */
     public List<Species> getSpecies() throws SQLException, IOException {
         List<Species> species = new ArrayList<>();
         String query = "";
@@ -82,6 +108,10 @@ public class SpeciesController {
         return species;
     }
 
+    /**
+     * Removes the specified species from the database. 
+     * @param inSpecies 
+     */
     public void deleteSpecies(Species inSpecies) {
         String insertQuery = String.format("DELETE FROM %s WHERE id = ? ", SPECIES_TABLE);
         try ( Connection dbConnection = ConnectionProvider.getInstance().getConnection(databaseName);  PreparedStatement pstmt = dbConnection.prepareStatement(insertQuery)) {
@@ -95,6 +125,10 @@ public class SpeciesController {
         }
     }
 
+    /**
+     * Update information about the specified species.
+     * @param inSpecies the species containing the updated information.
+     */
     public void updateSpecies(Species inSpecies) {
         String insertQuery = String.format("UPDATE %s SET %s =?,%s=?,%s=?,%s=? WHERE %s= ? ", SPECIES_TABLE, COL_SCIENTIFIC_NAME, COL_COMMON_NAME, COL_IMAGE, COL_FAMILY, COL_ID);
         try ( Connection dbConnection = ConnectionProvider.getInstance().getConnection(databaseName);  PreparedStatement pstmt = dbConnection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {

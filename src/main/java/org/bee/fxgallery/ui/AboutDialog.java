@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Sleiman Rabah
+ * Copyright (C) 2021 Sleiman R.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,6 @@ package org.bee.fxgallery.ui;
 
 import com.jfoenix.assets.JFoenixResources;
 import com.jfoenix.controls.JFXDecorator;
-import com.jfoenix.svg.SVGGlyph;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,7 +25,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -35,10 +33,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.bee.fxgallery.utils.AppUtils;
 
-/**
- *
- * @author Sleiman Rabah
- */
+ 
 public class AboutDialog extends Stage {
 
     public AboutDialog(Stage owner) {
@@ -55,7 +50,7 @@ public class AboutDialog extends Stage {
             //Scene dialogScene = new Scene(root);
             JFXDecorator decorator = new JFXDecorator(this, root);
             decorator.setCustomMaximize(true);
-            decorator.setGraphic( new ImageView(new Image(getClass().getResourceAsStream(AppUtils.APP_ICON))));
+            decorator.setGraphic(new ImageView(new Image(getClass().getResourceAsStream(AppUtils.APP_ICON))));
 
             Scene dialogScene = new Scene(decorator, 500, 400);
             Button btnClose = (Button) root.lookup("#btnClose");
@@ -63,13 +58,12 @@ public class AboutDialog extends Stage {
                 this.close();
             });
             //-- Disable textareas
-            TextArea taLibraries = (TextArea) root.lookup("#txtLibraries");
-            taLibraries.setDisable(true);
-            taLibraries.setStyle("-fx-opacity: 1.0;-fx-text-fill: #1d2633; -fx-font-size:12px;");            
+            TextArea textCredits = (TextArea) root.lookup("#txtCredits");
+            textCredits.setDisable(true);
+            textCredits.setStyle("-fx-opacity: 1.0;-fx-text-fill: #1d2633; -fx-font-size:12px;");
             TextArea taAbout = (TextArea) root.lookup("#taAbout");
             taAbout.setDisable(true);
-            taAbout.setStyle("-fx-opacity: 1.0;-fx-text-fill: #1d2633; -fx-font-size:12px;");            
-            
+            taAbout.setStyle("-fx-opacity: 1.0;-fx-text-fill: #1d2633; -fx-font-size:12px;");
 
             final ObservableList<String> stylesheets = dialogScene.getStylesheets();
             stylesheets.addAll(JFoenixResources.load("css/jfoenix-fonts.css").toExternalForm(),

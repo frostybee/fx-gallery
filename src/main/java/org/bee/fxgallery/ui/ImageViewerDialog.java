@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Sleiman Rabah
+ * Copyright (C) 2020 Sleiman R.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,8 +34,7 @@ import org.bee.fxgallery.ui.controller.FXMLImageViewerController;
 import org.bee.fxgallery.utils.AppUtils;
 
 /**
- *
- * @author Sleiman Rabah
+ * Creates a separate window for visualizing an image.
  */
 public class ImageViewerDialog extends Stage {
 

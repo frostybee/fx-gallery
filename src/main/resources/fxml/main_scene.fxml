@@ -14,7 +14,9 @@
 
 <BorderPane  maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" 
              minWidth="-Infinity" 
-             prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.bee.fxgallery.ui.controller.FXMLGalleryController">         
+             prefHeight="800.0" prefWidth="1000.0" 
+             xmlns="http://javafx.com/javafx/14" 
+             xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.bee.fxgallery.ui.controller.FXMLGalleryController">         
     <top>
         <VBox fx:id="vBox" prefWidth="100.0" BorderPane.alignment="CENTER">
             <children>

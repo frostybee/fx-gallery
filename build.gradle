@@ -11,11 +11,13 @@ apply plugin: 'application'
 description = 'A JavaFX Image Gallery'
 group = 'org.bee'
 
-mainClassName = 'org.bee.fxgallery.Main'
+mainClassName = 'org.bee.fxgallery.ui.MainWindow'
+//mainClassName = 'org.bee.fxgallery.tests.TestZooming'
 
-//mainClassName = 'org.bee.fxgallery.TestZooming'
+//mainClassName = 'org.bee.fxgallery.tests.PlutoExplorer'
+//mainClassName = 'org.bee.fxgallery.tests.TestZooming'
 //mainClassName = 'org.bee.fxgallery.tests.Driver'
-//mainClassName = 'org.bee.fxgallery.PlutoExplorer'
+
 
 repositories {    
     jcenter() 

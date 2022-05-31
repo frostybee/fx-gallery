@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2020 Sleiman Rabah
- *
+ * Copyright (C) 2020 Sleiman R.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -45,7 +44,7 @@ import org.bee.fxgallery.db.model.Species;
 /**
  * FXML Controller class
  *
- * @author Sleiman Rabah
+ *
  */
 public class FXMLImageViewerController implements Initializable {
 
@@ -85,7 +84,7 @@ public class FXMLImageViewerController implements Initializable {
             //-- Load the info about the selected species.
             lblCommonName.setText(mSpecies.getCommonName());
             lblFamilyName.setText(mSpecies.getFamily());
-            lblScientificName.setText(mSpecies.getScientificName());
+            lblScientificName.setText(mSpecies.getScientificName());            
             //-- Create and set an image view.
             InputStream myInputStream = new ByteArrayInputStream(mSpecies.getImageBytes());
             final Image fullImage = new Image(myInputStream);
@@ -96,13 +95,14 @@ public class FXMLImageViewerController implements Initializable {
             imgGraphic.setPreserveRatio(true);
             imgGraphic.setSmooth(true);
             imgGraphic.setCache(true);
-            imgGraphic.setPreserveRatio(true);            
+            imgGraphic.setPreserveRatio(true);
             //
             configureMouseEvents(width, height);
             //-- Initiliaze the sliding event.
             zoomSlider.valueProperty().addListener(new ChangeListener<Number>() {
                 public void changed(ObservableValue<? extends Number> ov,
                         Number oldValue, Number newValue) {
+                    System.out.println("Slider value:"+ newValue);
                     zoomImage(newValue);
                 }
             });
