@@ -12,10 +12,6 @@ description = 'A JavaFX Image Gallery'
 group = 'org.bee'
 
 mainClassName = 'org.bee.fxgallery.ui.MainWindow'
-//mainClassName = 'org.bee.fxgallery.tests.TestZooming'
-
-//mainClassName = 'org.bee.fxgallery.tests.PlutoExplorer'
-//mainClassName = 'org.bee.fxgallery.tests.TestZooming'
 //mainClassName = 'org.bee.fxgallery.tests.Driver'
 
 

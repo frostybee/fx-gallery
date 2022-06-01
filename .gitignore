@@ -20,6 +20,8 @@ gradle
 *.war
 *.ear
 
- 
- 
- 
+  
+#windows Junk
+*.ini
+[Tt]humbs.db
+*.DS_Store
