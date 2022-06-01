@@ -11,6 +11,7 @@ nb-configuration.xml
 ## Gradle specific
 .gradle
 gradle
+gradle/wrapper
 
 # Class Files #
 *.class
