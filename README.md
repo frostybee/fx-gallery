@@ -13,9 +13,8 @@ Bee's JFX is a simple application for managing images of species written in Java
 ## Libraries Used & Credits
 - [SQLite JDBC Driver](https://github.com/xerial/sqlite-jdbc), (by xerial, Taro L. Saito).
 - [FontAwesomeFX](https://mvnrepository.com/artifact/de.jensd/fontawesomefx) (by Dave Gandy).
-- [JFoenix](https://github.com/sshahine/JFoenix). A javafx material design library (by Shadi Shaheen
-).
-- [JavaFX] (https://openjfx.io/)
+- [JFoenix](https://github.com/sshahine/JFoenix). A javafx material design library (by Shadi Shaheen).
+- [JavaFX](https://openjfx.io/)
 
 
 
