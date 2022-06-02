@@ -1,6 +1,7 @@
 plugins {
     id 'application'
     id "org.openjfx.javafxplugin" version "0.0.9"
+    //id("com.github.johnrengelman.shadow") version "6.0.0"
 }
 
 apply plugin: 'java'
@@ -31,10 +32,13 @@ dependencies {
     implementation 'de.jensd:fontawesomefx-materialdesignfont:2.0.26-9.1.2'
     implementation 'com.jfoenix:jfoenix:9.0.10'
     //    implementation 'de.jensd:fontawesomefx:8.9'
-
-
 }
-
+// Setting for producing an executable jar file.
+ 
+// Shadow task depends on Jar task, so these will be reflected for Shadow as well
+tasks.jar {
+    manifest.attributes["Main-Class"] = "org.bee.fxgallery.ui.MainWindow"
+}
 javafx {
     version = "14"
     modules = [ 'javafx.controls', 'javafx.fxml' ]    
