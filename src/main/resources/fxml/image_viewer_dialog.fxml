@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <VBox stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/14" 
-      xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.bee.fxgallery.ui.controller.FXMLImageViewerController">
+      xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <ToolBar prefWidth="745.0">
             <items>

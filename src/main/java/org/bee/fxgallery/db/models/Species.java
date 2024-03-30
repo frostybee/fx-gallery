@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Sleiman R.
+ * Copyright (C) 2020 frostybee.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,13 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bee.fxgallery.db.model;
-
+package org.bee.fxgallery.db.models;
 
 /**
  * A class that represents a species table that is stored in the SQLite DB.
  *
- * 
+ *
  */
 public class Species {
 
@@ -92,7 +91,4 @@ public class Species {
     public String toString() {
         return "Species{" + "Id=" + Id + ", scientificName=" + scientificName + ", commonName=" + commonName + ", imageBytes=" + imageBytes + ", category=" + family + '}';
     }
-
-    
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Sleiman R.
+ * Copyright (C) 2020 frostybee.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,46 +14,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bee.fxgallery.db.helper;
+package org.bee.fxgallery.db.controllers;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 
 /**
  * A singleton class that enables connection to an SQLite database.
  */
-public class ConnectionProvider {
+public abstract class DBConnectionProvider {
 
-    private static final String DB_FOLDER = "data";
-    private Connection connection;
-    private static ConnectionProvider instance;
-
-    private ConnectionProvider() {
-
-    }
+    private static final String DB_FOLDER = "/data";
 
     /**
      * Opens a connection to an SQLite database.
      *
      * @param databaseName the name of the SQLite database file (it can also be
      * a relative path.
-     * @return a connection to an SQLite database.
+     * @return an opened connection to an SQLite database.
      */
     public Connection getConnection(String databaseName) {
         try {
+            String db_location = DBConnectionProvider.class.getResource(DB_FOLDER + "/" + databaseName).toExternalForm();
             Class.forName("org.sqlite.JDBC");
-            Connection dbConnection = DriverManager.getConnection("jdbc:sqlite:" + DB_FOLDER + "/" + databaseName);
+            Connection dbConnection = DriverManager.getConnection("jdbc:sqlite:" + db_location);
             return dbConnection;
-        } catch (Exception e) {
+        } catch (ClassNotFoundException | SQLException e) {
             System.out.println(e);
             return null;
         }
-    }
-
-    public static ConnectionProvider getInstance() {
-        if (instance == null) {
-            instance = new ConnectionProvider();
-        }
-        return instance;
     }
 }

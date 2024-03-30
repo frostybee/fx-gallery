@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Sleiman R.
+ * Copyright (C) 2020 frostybee.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bee.fxgallery.ui.controller;
+package org.bee.fxgallery.ui.controllers;
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.utils.FontAwesomeIconFactory;
@@ -22,17 +22,13 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
@@ -55,18 +51,18 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
-import org.bee.fxgallery.db.controller.SpeciesController;
-import org.bee.fxgallery.db.model.Species;
+import org.bee.fxgallery.db.controllers.SpeciesController;
+import org.bee.fxgallery.db.models.Species;
 import org.bee.fxgallery.ui.AboutDialog;
 import org.bee.fxgallery.ui.ManageSpeciesDialog;
 import org.bee.fxgallery.ui.ManageSpeciesDialog.SpeciesDlgViewMode;
 import org.bee.fxgallery.ui.ImageViewerDialog;
 
 /**
- * A class that controls the main window of the gallery.
+ * FXML controller for the gallery's main stage.
  *
  */
-public class FXMLGalleryController implements Initializable {
+public class MainAppFXMLController  {
 
     @FXML
     private TilePane imagesPane;
@@ -85,8 +81,8 @@ public class FXMLGalleryController implements Initializable {
     private SpeciesController mSpeciesController;
     private File file = null;
 
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
+    @FXML
+    public void initialize() {
         mSpeciesController = new SpeciesController();
         // Set events on corresponding controls.
         btnAddImage.setOnAction(this::handleButtonActions);
@@ -116,10 +112,8 @@ public class FXMLGalleryController implements Initializable {
             imgScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
             imgScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
             imgScrollPane.setFitToWidth(true);
-        } catch (SQLException ex) {
-            Logger.getLogger(FXMLGalleryController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(FXMLGalleryController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException | IOException ex) {
+            Logger.getLogger(MainAppFXMLController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -231,12 +225,8 @@ public class FXMLGalleryController implements Initializable {
             btnContextMenu.setGraphic(FontAwesomeIconFactory.get().createIcon(FontAwesomeIcon.ELLIPSIS_V, "1.5em"));
             btnContextMenu.setAlignment(Pos.BOTTOM_RIGHT);
             // bind the menu to a node of you scene e.g. canvas            
-            btnContextMenu.addEventHandler(MouseEvent.MOUSE_CLICKED,
-                    new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent e) {
-                    contextMenu.show(btnContextMenu, e.getScreenX(), e.getScreenY());
-                }
+            btnContextMenu.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
+                contextMenu.show(btnContextMenu, e.getScreenX(), e.getScreenY());
             });
             //-- Make the card's image.
             InputStream myInputStream = new ByteArrayInputStream(inSpecies.getImageBytes());
@@ -246,13 +236,10 @@ public class FXMLGalleryController implements Initializable {
             imgSpecies.setFitHeight(130);
             Tooltip.install(imgSpecies, new Tooltip(inSpecies.getCommonName()));
             // Enable full image view by double clicking an item in the list.
-            imgSpecies.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent mouseEvent) {
-                    if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
-                        if (mouseEvent.getClickCount() == 2) {
-                            viewImage(inSpecies);
-                        }
+            imgSpecies.setOnMouseClicked((MouseEvent mouseEvent) -> {
+                if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
+                    if (mouseEvent.getClickCount() == 2) {
+                        viewImage(inSpecies);
                     }
                 }
             });

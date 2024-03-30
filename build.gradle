@@ -1,29 +1,47 @@
 plugins {
     id 'application'
-    id "org.openjfx.javafxplugin" version "0.0.9"
+    // Load and apply the required JavaFX plugin.    
+    id 'org.openjfx.javafxplugin' version '0.0.14'
 }
 
 apply plugin: 'java'
 apply plugin: 'jacoco'
 apply plugin: 'application'
 
+def logbackVersion = "1.4.11"
+def javafxVersion = "20.0.2"    
 
-description = 'A JavaFX Image Gallery'
+description = 'FX Image Gallery'
 group = 'org.bee'
-
-mainClassName = 'org.bee.fxgallery.ui.MainWindow'
-//mainClassName = 'org.bee.fxgallery.tests.Driver'
-
 
 repositories {    
     jcenter() 
     mavenCentral()    
+    mavenLocal()
+}
+
+//-- Loads the JavaFX modules of the selected JavaFX version.
+javafx {    
+    version = "$javafxVersion"
+    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.graphics', 'javafx.media' ]
 }
 
 dependencies {
-    testImplementation     'junit:junit:4.13'
-    //implementation group: 'commons-io', name: 'commons-io', version: '2.7'  
-    implementation 'org.xerial:sqlite-jdbc:3.30.1'        
+    // The following .jars are pulled from:
+    // https://repo.maven.apache.org/maven2/org/openjfx/    
+    compileOnly  "org.openjfx:javafx-base:$javafxVersion:sources"
+    compileOnly  "org.openjfx:javafx-controls:$javafxVersion:sources"
+    compileOnly  "org.openjfx:javafx-fxml:$javafxVersion:sources"
+    compileOnly  "org.openjfx:javafx-graphics:$javafxVersion:sources"
+    
+    // Load the Javadoc for the specified JavaFX modules.
+    compileOnly  "org.openjfx:javafx-base:$javafxVersion:javadoc"
+    compileOnly  "org.openjfx:javafx-controls:$javafxVersion:javadoc"
+    compileOnly  "org.openjfx:javafx-fxml:$javafxVersion:javadoc"
+    compileOnly  "org.openjfx:javafx-graphics:$javafxVersion:javadoc"
+
+
+    implementation 'org.xerial:sqlite-jdbc:3.45.2.0'        
     implementation 'de.jensd:fontawesomefx-commons:11.0'
     //    implementation 'de.jensd:fontawesomefx-materialdesignfont:1.7.22-11'
     implementation 'de.jensd:fontawesomefx-fontawesome:4.7.0-9.1.2'
@@ -31,11 +49,14 @@ dependencies {
     implementation 'de.jensd:fontawesomefx-materialdesignfont:2.0.26-9.1.2'
     implementation 'com.jfoenix:jfoenix:9.0.10'
     //    implementation 'de.jensd:fontawesomefx:8.9'
-
+    // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.12'
 
 }
 
-javafx {
-    version = "14"
-    modules = [ 'javafx.controls', 'javafx.fxml' ]    
+application {       
+   // TODO: Specify the fully-qualified name of the class 
+   //      that contains the main method to be executed.
+   mainClassName = 'org.bee.fxgallery.ui.MainApp'
+   //mainClassName = 'org.bee.fxgallery.tests.Driver'
 }

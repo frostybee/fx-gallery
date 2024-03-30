@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Sleiman R.
+ * Copyright (C) 2020 frostybee.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bee.fxgallery.db.controller;
+package org.bee.fxgallery.db.controllers;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,15 +25,15 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import org.bee.fxgallery.db.helper.ConnectionProvider;
-import org.bee.fxgallery.db.model.Species;
+import org.bee.fxgallery.db.models.Species;
 
 /**
  * A class that implements CRUD operations performed on species.
- * @author Sleiman Rabah
+ *
+ * @author frostybee
  */
-public class SpeciesController {
-   
+public class SpeciesController extends DBConnectionProvider {
+
     private final String databaseName = "species.db";
     private final String SPECIES_TABLE = "species";
     //-- Table columns
@@ -48,12 +48,13 @@ public class SpeciesController {
     }
 
     /**
-     * Inserts a new species into the attached database. 
-     * @param newSpecies the species to be added. 
+     * Inserts a new species into the attached database.
+     *
+     * @param newSpecies the species to be added.
      */
     public void addNewSpecies(Species newSpecies) {
         String insertQuery = String.format("INSERT INTO %s (%s,%s,%s,%s) VALUES(?,?,?,?) ", SPECIES_TABLE, COL_SCIENTIFIC_NAME, COL_COMMON_NAME, COL_IMAGE, COL_FAMILY);
-        try ( Connection dbConnection = ConnectionProvider.getInstance().getConnection(databaseName);  PreparedStatement pstmt = dbConnection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection dbConnection = getConnection(databaseName); PreparedStatement pstmt = dbConnection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
             //-- 1) Set parameters and insert the new item.
             pstmt.setString(1, newSpecies.getScientificName());
             pstmt.setString(2, newSpecies.getCommonName());
@@ -78,16 +79,17 @@ public class SpeciesController {
 
     /**
      * Retrieves the list of species from the attached database.
+     *
      * @return a list containing all the species.
      * @throws SQLException
-     * @throws IOException 
+     * @throws IOException
      */
     public List<Species> getSpecies() throws SQLException, IOException {
         List<Species> species = new ArrayList<>();
         String query = "";
         //-- Step 1 & 2: Open a connection to the specified database 
         //--         and create a prepared statement for executing SQL queries..  
-        try ( Connection dbConnection = ConnectionProvider.getInstance().getConnection(databaseName);  Statement stmt = dbConnection.createStatement()) {
+        try (Connection dbConnection = getConnection(databaseName); Statement stmt = dbConnection.createStatement()) {
             query = String.format("SELECT *  FROM %s ", SPECIES_TABLE);
             ResultSet rSet = stmt.executeQuery(query);
             while (rSet.next()) {
@@ -109,12 +111,13 @@ public class SpeciesController {
     }
 
     /**
-     * Removes the specified species from the database. 
-     * @param inSpecies 
+     * Removes the specified species from the database.
+     *
+     * @param inSpecies
      */
     public void deleteSpecies(Species inSpecies) {
         String insertQuery = String.format("DELETE FROM %s WHERE id = ? ", SPECIES_TABLE);
-        try ( Connection dbConnection = ConnectionProvider.getInstance().getConnection(databaseName);  PreparedStatement pstmt = dbConnection.prepareStatement(insertQuery)) {
+        try (Connection dbConnection = getConnection(databaseName); PreparedStatement pstmt = dbConnection.prepareStatement(insertQuery)) {
             // set parameters
             pstmt.setInt(1, inSpecies.getId());
             pstmt.executeUpdate();
@@ -126,12 +129,13 @@ public class SpeciesController {
     }
 
     /**
-     * Update information about the specified species.
+     * Updates information about the specified species.
+     *
      * @param inSpecies the species containing the updated information.
      */
     public void updateSpecies(Species inSpecies) {
         String insertQuery = String.format("UPDATE %s SET %s =?,%s=?,%s=?,%s=? WHERE %s= ? ", SPECIES_TABLE, COL_SCIENTIFIC_NAME, COL_COMMON_NAME, COL_IMAGE, COL_FAMILY, COL_ID);
-        try ( Connection dbConnection = ConnectionProvider.getInstance().getConnection(databaseName);  PreparedStatement pstmt = dbConnection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection dbConnection = getConnection(databaseName); PreparedStatement pstmt = dbConnection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
             //-- 1) Set parameters and insert the new item.
             pstmt.setString(1, inSpecies.getScientificName());
             pstmt.setString(2, inSpecies.getCommonName());
@@ -141,9 +145,7 @@ public class SpeciesController {
             pstmt.executeUpdate();
             System.out.println("Updated entry's ID: " + inSpecies.getId());
         } catch (SQLException ex) {
-            
             java.lang.System.err.println("An error has occured while trying to execute query: " + insertQuery);
-            
             System.err.println("Error message: " + ex);
         }
     }

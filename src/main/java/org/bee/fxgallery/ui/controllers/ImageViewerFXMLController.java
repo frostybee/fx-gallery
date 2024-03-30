@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Sleiman R.
+ * Copyright (C) 2020 frostybee.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -13,22 +13,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bee.fxgallery.ui.controller;
+package org.bee.fxgallery.ui.controllers;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXSlider;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.net.URL;
-import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Cursor;
@@ -39,14 +35,14 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import org.bee.fxgallery.db.model.Species;
+import org.bee.fxgallery.db.models.Species;
 
 /**
  * FXML Controller class
  *
  *
  */
-public class FXMLImageViewerController implements Initializable {
+public class ImageViewerFXMLController {
 
     @FXML
     private JFXButton btnReset;
@@ -71,8 +67,8 @@ public class FXMLImageViewerController implements Initializable {
     /**
      * Initializes the controller class.
      */
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
+    @FXML
+    public void initialize() {
 //        pnImageContainer.setPrefSize(800, 600);
         imgGraphic.fitWidthProperty().bind(pnImageContainer.widthProperty());
         imgGraphic.fitHeightProperty().bind(pnImageContainer.heightProperty());
@@ -84,7 +80,7 @@ public class FXMLImageViewerController implements Initializable {
             //-- Load the info about the selected species.
             lblCommonName.setText(mSpecies.getCommonName());
             lblFamilyName.setText(mSpecies.getFamily());
-            lblScientificName.setText(mSpecies.getScientificName());            
+            lblScientificName.setText(mSpecies.getScientificName());
             //-- Create and set an image view.
             InputStream myInputStream = new ByteArrayInputStream(mSpecies.getImageBytes());
             final Image fullImage = new Image(myInputStream);
@@ -99,16 +95,13 @@ public class FXMLImageViewerController implements Initializable {
             //
             configureMouseEvents(width, height);
             //-- Initiliaze the sliding event.
-            zoomSlider.valueProperty().addListener(new ChangeListener<Number>() {
-                public void changed(ObservableValue<? extends Number> ov,
-                        Number oldValue, Number newValue) {
-                    System.out.println("Slider value:"+ newValue);
-                    zoomImage(newValue);
-                }
+            zoomSlider.valueProperty().addListener((ObservableValue<? extends Number> ov, Number oldValue, Number newValue) -> {
+                System.out.println("Slider value:" + newValue);
+                zoomImage(newValue);
             });
             reset(imgGraphic, width, height);
         } catch (Exception ex) {
-            Logger.getLogger(FXMLImageViewerController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ImageViewerFXMLController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

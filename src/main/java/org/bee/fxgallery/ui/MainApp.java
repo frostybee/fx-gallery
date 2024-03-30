@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Sleiman R.
+ * Copyright (C) 2020 frostybee.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,29 +31,30 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import org.bee.fxgallery.ui.controller.FXMLGalleryController;
+import org.bee.fxgallery.ui.controllers.MainAppFXMLController;
 import org.bee.fxgallery.utils.AppUtils;
 
 /**
  *
- * Creates and manages the main application window. 
+ * Creates and manages the main application window.
  */
-public class MainWindow extends Application {
+public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(AppUtils.APP_FXML_PATH + "main_scene.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(AppUtils.APP_FXML_PATH + "mainApp_layout.fxml"));
+        MainAppFXMLController controller = new MainAppFXMLController();
+        loader.setController(controller);
         BorderPane root = (BorderPane) loader.load();
-        FXMLGalleryController controller = (FXMLGalleryController) loader.getController();
         controller.setMainStage(stage);
         root.setStyle("-fx-background-color: white;");
 
         new Thread(() -> {
             try {
-                SVGGlyphLoader.loadGlyphsFont(MainWindow.class.getResourceAsStream("/fonts/icomoon.svg"),
+                SVGGlyphLoader.loadGlyphsFont(MainApp.class.getResourceAsStream("/fonts/icomoon.svg"),
                         "icomoon.svg");
-            } catch (IOException ioExc) {
-                ioExc.printStackTrace();
+            } catch (IOException ex) {
+                ex.printStackTrace();
             }
         }).start();
 
@@ -96,5 +97,4 @@ public class MainWindow extends Application {
     public void stop() throws Exception {
         Platform.exit();
     }
-
 }

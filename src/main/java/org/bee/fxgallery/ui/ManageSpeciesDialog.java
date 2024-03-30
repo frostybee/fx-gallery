@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Sleiman R.
+ * Copyright (C) 2020 frostybee.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.bee.fxgallery.db.model.Species;
+import org.bee.fxgallery.db.models.Species;
 import org.bee.fxgallery.utils.AppUtils;
 
 /**
@@ -119,7 +119,7 @@ public class ManageSpeciesDialog extends Stage {
     private Pane makeInputForm() {
         Pane root = null;
         try {
-            root = FXMLLoader.load(getClass().getResource(AppUtils.APP_FXML_PATH + "manage_species_dialog.fxml"));
+            root = FXMLLoader.load(getClass().getResource(AppUtils.APP_FXML_PATH + "edit_species_dialog.fxml"));
         } catch (IOException ex) {
             Logger.getLogger(ManageSpeciesDialog.class.getName()).log(Level.SEVERE, null, ex);
         }

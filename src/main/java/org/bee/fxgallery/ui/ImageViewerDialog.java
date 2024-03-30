@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Sleiman R.
+ * Copyright (C) 2020 frostybee.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,8 +29,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.bee.fxgallery.db.model.Species;
-import org.bee.fxgallery.ui.controller.FXMLImageViewerController;
+import org.bee.fxgallery.db.models.Species;
+import org.bee.fxgallery.ui.controllers.ImageViewerFXMLController;
 import org.bee.fxgallery.utils.AppUtils;
 
 /**
@@ -55,8 +55,9 @@ public class ImageViewerDialog extends Stage {
         VBox root = null;
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(AppUtils.APP_FXML_PATH + "image_viewer_dialog.fxml"));
+            ImageViewerFXMLController controller = new ImageViewerFXMLController();
+            loader.setController(controller);
             root = loader.load();
-            FXMLImageViewerController controller = (FXMLImageViewerController) loader.getController();
             controller.setMainStage(this);
             controller.setSpecies(mSpecies);
             controller.loadImage();
@@ -64,7 +65,7 @@ public class ImageViewerDialog extends Stage {
             //Scene dialogScene = new Scene(root);
             JFXDecorator decorator = new JFXDecorator(this, root);
             decorator.setCustomMaximize(true);
-            decorator.setGraphic( new ImageView(new Image(getClass().getResourceAsStream(AppUtils.APP_ICON))));
+            decorator.setGraphic(new ImageView(new Image(getClass().getResourceAsStream(AppUtils.APP_ICON))));
 
             Scene dialogScene = new Scene(decorator, 400, 300);
             final ObservableList<String> stylesheets = dialogScene.getStylesheets();
